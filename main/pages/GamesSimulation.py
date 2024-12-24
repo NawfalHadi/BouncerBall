@@ -16,6 +16,9 @@ class GamesSimulation:
         self.isLoading = True
         self.isRunning = True
 
+    def draw_field(self):
+        pass
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
