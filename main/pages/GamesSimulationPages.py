@@ -1,12 +1,8 @@
-import sys, os
-
 import pygame
 import math
 
 from main.constant.Size import *
 from main.constant.Color import *
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class GamesSimulation:
     def __init__(self):
@@ -30,7 +26,3 @@ class GamesSimulation:
             pygame.display.update()
 
 
-if __name__ == "__main__":
-    GamesSimulation().run()
-    pygame.quit()
-    sys.exit()
