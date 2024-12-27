@@ -4,8 +4,9 @@ import math
 from main.constant.Size import *
 from main.constant.Color import *
 
-class GamesSimulation:
+class GamesSimulationPage:
     def __init__(self):
+        pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         
         "== GAMEPLAY STATE =="
