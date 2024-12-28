@@ -15,6 +15,9 @@ class GamesSimulationPage:
         self.isRunning = True
 
         self.init_field()
+        self.init_player()
+
+    "== FIELD =="
 
     def init_field(self):
         self.left_field = Line((START_FIELD_WIDHT, START_FIELD_HEIGHT), (START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT), BLACK)
@@ -50,6 +53,11 @@ class GamesSimulationPage:
         self.bottom_gk_right_field.draw(self.screen)
         self.gk_right_vertical.draw(self.screen)
 
+    "== PLAYER =="
+
+    def init_player(self):
+        pass
+    
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
