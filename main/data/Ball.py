@@ -10,3 +10,6 @@ class Ball:
         self.speed_x, self.speed_y = 7, 5
         self.friction = 0.99
         self.min_speed = 0.5
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.ball_x, self.ball_y))
