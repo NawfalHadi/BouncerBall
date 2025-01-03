@@ -65,7 +65,7 @@ class GamesSimulationPage:
 
     def init_player_blue(self):
         plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
-        self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "R")
+        self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "L")
         self.player_blue.set_position()
 
     def draw_player_blue(self):
@@ -76,8 +76,8 @@ class GamesSimulationPage:
         self.player_blue.y += self.player_blue.speed_y
 
         # collision check
-        # self.player_collision_frame(self.player_blue)
-        self.gk_collision_frame(self.player_blue)
+        self.check_player_frame_collision(self.player_blue)
+        # self.check_gk_frame_collision(self.player_blue)
 
     "== BALL =="
 
@@ -88,8 +88,8 @@ class GamesSimulationPage:
         self.ball.draw(self.screen)
 
     def update_ball(self):
-        self.ball.ball_x += self.ball.speed_x
-        self.ball.ball_y += self.ball.speed_y
+        self.ball.x += self.ball.speed_x
+        self.ball.y += self.ball.speed_y
 
         self.ball.speed_x *= self.ball.friction
         self.ball.speed_y *= self.ball.friction
@@ -98,24 +98,22 @@ class GamesSimulationPage:
             self.ball.speed_x = 0
             self.ball.speed_y = 0
 
-        if self.ball.ball_x <= START_FIELD_WIDHT:
-            self.ball.ball_x = START_FIELD_WIDHT
-            self.ball.speed_x = -self.ball.speed_x
-        if self.ball.ball_x + self.ball.width >= START_FIELD_WIDHT + FIELD_WIDTH:
-            self.ball.ball_x = START_FIELD_WIDHT + FIELD_WIDTH - self.ball.width
-            self.ball.speed_x = -self.ball.speed_x
-        if self.ball.ball_y <= START_FIELD_HEIGHT:
-            self.ball.ball_y = START_FIELD_HEIGHT
-            self.ball.speed_y = -self.ball.speed_y
-        if self.ball.ball_y + self.ball.height >= START_FIELD_HEIGHT + FIELD_HEIGHT:
-            self.ball.ball_y = START_FIELD_HEIGHT + FIELD_HEIGHT - self.ball.height
-            self.ball.speed_y = -self.ball.speed_y
-    
+        self.check_ball_frame_collision()
+
+        if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, self.player_blue.x, self.player_blue.y, self.player_blue.width, self.player_blue.height):
+            ball_center_x = self.ball.x + self.ball.width / 2
+            player_center_x = self.player_blue.x + self.player_blue.width / 2
+
+            relative_position = (ball_center_x - player_center_x) / (self.player_blue.width / 2)
+
+            self.ball.speed_x = relative_position * 7
+            self.ball.speed_y = -7
+
         "== GAMEPLAY =="
    
     "== GAMEPLAY =="
 
-    def check_collision(self, ball_x, ball_y, ball_width, ball_height, player_x, player_y, player_width, player_height):
+    def check_ball_player_collision(self, ball_x, ball_y, ball_width, ball_height, player_x, player_y, player_width, player_height):
         """
         Check if two rectangles collide.
 
@@ -139,7 +137,7 @@ class GamesSimulationPage:
             ball_y + ball_height > player_y
         )
 
-    def player_collision_frame(self, player):
+    def check_player_frame_collision(self, player):
         if player.x <= START_FIELD_WIDHT:
             player.x = START_FIELD_WIDHT
             player.speed_x = -player.speed_x
@@ -153,7 +151,7 @@ class GamesSimulationPage:
             player.y = START_FIELD_HEIGHT + FIELD_HEIGHT - player.height
             player.speed_y = -player.speed_y
 
-    def gk_collision_frame(self, player):
+    def check_gk_frame_collision(self, player):
         if player.side == "L":
             top = self.top_gk_left_field.get_rect().top
             left = self.left_field.get_rect().left
@@ -178,6 +176,20 @@ class GamesSimulationPage:
         if player.y + player.height >= bottom:
             player.y = bottom - player.height
             player.speed_y = -player.speed_y
+
+    def check_ball_frame_collision(self):
+        if self.ball.x <= START_FIELD_WIDHT:
+            self.ball.x = START_FIELD_WIDHT
+            self.ball.speed_x = -self.ball.speed_x
+        if self.ball.x + self.ball.width >= START_FIELD_WIDHT + FIELD_WIDTH:
+            self.ball.x = START_FIELD_WIDHT + FIELD_WIDTH - self.ball.width
+            self.ball.speed_x = -self.ball.speed_x
+        if self.ball.y <= START_FIELD_HEIGHT:
+            self.ball.y = START_FIELD_HEIGHT
+            self.ball.speed_y = -self.ball.speed_y
+        if self.ball.y + self.ball.height >= START_FIELD_HEIGHT + FIELD_HEIGHT:
+            self.ball.y = START_FIELD_HEIGHT + FIELD_HEIGHT - self.ball.height
+            self.ball.speed_y = -self.ball.speed_y
 
     def run(self):
         while self.isRunning:
