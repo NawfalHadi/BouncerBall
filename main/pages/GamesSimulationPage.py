@@ -3,10 +3,12 @@ import math
 
 from main.constant.Size import *
 from main.constant.Color import *
+from main.constant.Position import *
 from main.ui.Line import Line
 
 from main.data.Ball import Ball
 from main.data.Player import Player
+
 
 class GamesSimulationPage:
     def __init__(self):
@@ -39,7 +41,6 @@ class GamesSimulationPage:
         self.bottom_gk_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), RED)
         self.gk_right_vertical = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
 
-
     def draw_field(self):
         self.left_field.draw(self.screen)
         self.right_field.draw(self.screen)
@@ -60,53 +61,25 @@ class GamesSimulationPage:
     "== PLAYER =="
     
     def init_player(self):
-        self.init_left_team()
+        self.init_player_blue()
 
-    def init_left_team(self):
-        self.left_team = []
-        player1 = Player("Ah Tong", START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + 50, 30, 30, RED)
-        player2 = Player("Uncle Muhtu", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 100, 50, 50, RED)
-        self.left_team.append(player1)
-        self.left_team.append(player2)
-        
-        # Assigning individual variables for each player
-        self.player1 = player1
-        self.player2 = player2
-        for i, player in enumerate(self.left_team):
-            setattr(self, f'player{i+1}', player)
-        for i in range(3, 23):
-            player = Player(f"Player {i}", START_FIELD_WIDHT + i * 50, START_FIELD_HEIGHT + i * 50, 50, 50, RED)
-            self.left_team.append(player)
-            setattr(self, f'player{i}', player)
+    def init_player_blue(self):
+        plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
+        self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "R")
+        self.player_blue.set_position()
 
-    def draw_left_team(self):
-        for player in self.left_team:
-            player.draw(self.screen)
+    def draw_player_blue(self):
+        self.player_blue.draw(self.screen)
 
-    "== GAMEPLAY =="
-    def check_collision(self, ball_x, ball_y, ball_width, ball_height, player_x, player_y, player_width, player_height):
-        """
-        Check if two rectangles collide.
+    def update_player_blue(self):
+        self.player_blue.x += self.player_blue.speed_x
+        self.player_blue.y += self.player_blue.speed_y
 
-        Args:
-            x1 (float): The x-coordinate of the top-left corner of the first rectangle.
-            y1 (float): The y-coordinate of the top-left corner of the first rectangle.
-            w1 (float): The width of the first rectangle.
-            h1 (float): The height of the first rectangle.
-            x2 (float): The x-coordinate of the top-left corner of the second rectangle.
-            y2 (float): The y-coordinate of the top-left corner of the second rectangle.
-            w2 (float): The width of the second rectangle.
-            h2 (float): The height of the second rectangle.
+        # collision check
+        # self.player_collision_frame(self.player_blue)
+        self.gk_collision_frame(self.player_blue)
 
-        Returns:
-            bool: True if the rectangles collide, False otherwise.
-        """
-        return (
-            ball_x < player_x + player_width and 
-            ball_x + ball_width > player_x and 
-            ball_y < player_y + player_height and 
-            ball_y + ball_height > player_y
-        )
+    "== BALL =="
 
     def init_ball(self):
         self.ball = Ball(START_FIELD_WIDHT + FIELD_WIDTH / 2, START_FIELD_HEIGHT + FIELD_HEIGHT / 2)
@@ -138,6 +111,74 @@ class GamesSimulationPage:
             self.ball.ball_y = START_FIELD_HEIGHT + FIELD_HEIGHT - self.ball.height
             self.ball.speed_y = -self.ball.speed_y
     
+        "== GAMEPLAY =="
+   
+    "== GAMEPLAY =="
+
+    def check_collision(self, ball_x, ball_y, ball_width, ball_height, player_x, player_y, player_width, player_height):
+        """
+        Check if two rectangles collide.
+
+        Args:
+            x1 (float): The x-coordinate of the top-left corner of the first rectangle.
+            y1 (float): The y-coordinate of the top-left corner of the first rectangle.
+            w1 (float): The width of the first rectangle.
+            h1 (float): The height of the first rectangle.
+            x2 (float): The x-coordinate of the top-left corner of the second rectangle.
+            y2 (float): The y-coordinate of the top-left corner of the second rectangle.
+            w2 (float): The width of the second rectangle.
+            h2 (float): The height of the second rectangle.
+
+        Returns:
+            bool: True if the rectangles collide, False otherwise.
+        """
+        return (
+            ball_x < player_x + player_width and 
+            ball_x + ball_width > player_x and 
+            ball_y < player_y + player_height and 
+            ball_y + ball_height > player_y
+        )
+
+    def player_collision_frame(self, player):
+        if player.x <= START_FIELD_WIDHT:
+            player.x = START_FIELD_WIDHT
+            player.speed_x = -player.speed_x
+        if player.x + player.width >= START_FIELD_WIDHT + FIELD_WIDTH:
+            player.x = START_FIELD_WIDHT + FIELD_WIDTH - player.width
+            player.speed_x = -player.speed_x
+        if player.y <= START_FIELD_HEIGHT:
+            player.y = START_FIELD_HEIGHT
+            player.speed_y = -player.speed_y
+        if player.y + player.height >= START_FIELD_HEIGHT + FIELD_HEIGHT:
+            player.y = START_FIELD_HEIGHT + FIELD_HEIGHT - player.height
+            player.speed_y = -player.speed_y
+
+    def gk_collision_frame(self, player):
+        if player.side == "L":
+            top = self.top_gk_left_field.get_rect().top
+            left = self.left_field.get_rect().left
+            right = self.gk_left_vertical.get_rect().left
+            bottom = self.bottom_gk_left_field.get_rect().top
+
+        elif player.side == "R":
+            top = self.top_gk_right_field.get_rect().top
+            left = self.gk_right_vertical.get_rect().left
+            right = self.right_field.get_rect().left
+            bottom = self.bottom_gk_right_field.get_rect().top
+        
+        if player.x <= left:
+            player.x = left
+            player.speed_x = -player.speed_x
+        if player.x + player.width >= right:
+            player.x = right - player.width
+            player.speed_x = -player.speed_x
+        if player.y <= top:
+            player.y = top
+            player.speed_y = -player.speed_y
+        if player.y + player.height >= bottom:
+            player.y = bottom - player.height
+            player.speed_y = -player.speed_y
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -151,8 +192,9 @@ class GamesSimulationPage:
             self.draw_ball()
             self.update_ball()
 
-            self.draw_left_team()
-            # print(START_FIELD_GK_HEIGHT)
+            self.draw_player_blue()
+            self.update_player_blue()
+
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
