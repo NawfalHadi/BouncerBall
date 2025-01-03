@@ -22,8 +22,8 @@ class Main:
         self.create_teams = Button("Create Teams", 100, 250, 200, 100, action=self.create_teams_page)
     
     def draw_interface(self):
-        self.start_sim.draw(self.screen, 100, 100, 200, 100)
-        self.create_teams.draw(self.screen, 100, 250, 200, 100) 
+        self.start_sim.draw(self.screen)
+        self.create_teams.draw(self.screen) 
 
     def start_simulation(self):
         from main.pages.GamesSimulationPage import GamesSimulationPage
@@ -52,3 +52,4 @@ if __name__ == "__main__":
     Main().run()
     pygame.quit()
     sys.exit()
+

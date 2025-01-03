@@ -12,7 +12,7 @@ class Button:
         self.action = action
         self.font_size = font_size
 
-    def draw(self, screen, x, y, width, height, font_color=WHITE, font_hover=BLACK):
+    def draw(self, screen, font_color=WHITE, font_hover=BLACK):
         font = pygame.font.Font(None, self.font_size)
         
         mouse_pos = pygame.mouse.get_pos()
