@@ -19,13 +19,19 @@ class Main:
 
     def init_interface(self):
         self.start_sim = Button("Start", 100, 100, 200, 100, action=self.start_simulation)
+        self.create_teams = Button("Create Teams", 100, 250, 200, 100, action=self.create_teams_page)
     
     def draw_interface(self):
         self.start_sim.draw(self.screen, 100, 100, 200, 100)
+        self.create_teams.draw(self.screen, 100, 250, 200, 100) 
 
     def start_simulation(self):
         from main.pages.GamesSimulationPage import GamesSimulationPage
         GamesSimulationPage().run()
+
+    def create_teams_page(self):
+        from main.pages.CreateTeamsPage import CreateTeamsPage
+        CreateTeamsPage().run()
 
     def run(self):
         while self.isRunning:
@@ -36,6 +42,7 @@ class Main:
                     self.isRunning = False
                 
                 self.start_sim.is_clicked(event)
+                self.create_teams.is_clicked(event)
 
             self.draw_interface()
 
