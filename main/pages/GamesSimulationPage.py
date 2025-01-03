@@ -11,13 +11,16 @@ from main.data.Player import Player
 
 
 class GamesSimulationPage:
-    def __init__(self):
+    def __init__(self, left_team=None, right_team=None):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         
-        "== GAMEPLAY STATE =="
+        "== PAGE STATE =="
         self.isLoading = True
         self.isRunning = True
+        
+        "== GAMEPLAY STATE =="
+        self.isFirstTouch = True
 
         self.init_field()
         self.init_player()
@@ -64,24 +67,23 @@ class GamesSimulationPage:
         self.init_player_blue()
 
     def init_player_blue(self):
-        plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
-        self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "L")
-        self.player_blue.set_position()
-        self.players_blue = []
+        # plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
+        # self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "L")
+        # self.player_blue.set_position()
+        # self.players_blue = []
 
-        positions = [
-            (START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2),
-            (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3),
-            (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3),
-            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4),
-            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4),
-            (START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 2),
+        self.players_blue = [
+            Player("Player Blue 1", START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, GK, "L"),
+            Player("Player Blue 2", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
+            Player("Player Blue 3", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
+            Player("Player Blue 4", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
+            Player("Player Blue 5", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
+            Player("Player Blue 6", START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, FW, "L"),
         ]
 
-        for i, (x, y) in enumerate(positions):
-            player = Player(f"Player Blue {i+1}", x, y, 20, 20, BLUE, GK, "L")
+        for player in self.players_blue:
             player.set_position()
-            self.players_blue.append(player)
+
 
     def draw_player_blue(self):
         for player in self.players_blue:
@@ -115,8 +117,11 @@ class GamesSimulationPage:
         self.ball.draw(self.screen)
 
     def update_ball(self):
-        self.ball.x += self.ball.speed_x
-        self.ball.y += self.ball.speed_y
+        if not self.isFirstTouch:
+            self.ball.x += self.ball.speed_x
+            self.ball.y += self.ball.speed_y
+        else:
+            self.ball.x += self.ball.speed_x
 
         self.ball.speed_x *= self.ball.friction
         self.ball.speed_y *= self.ball.friction
@@ -129,6 +134,7 @@ class GamesSimulationPage:
 
         for player in self.players_blue:
             if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, player.x, player.y, player.width, player.height):
+                self.isFirstTouch = False
                 ball_center_x = self.ball.x + self.ball.width / 2
                 player_center_x = player.x + player.width / 2
 
@@ -137,7 +143,6 @@ class GamesSimulationPage:
                 self.ball.speed_x = relative_position * 7
                 self.ball.speed_y = -7
 
-        "== GAMEPLAY =="
    
     "== GAMEPLAY =="
 
