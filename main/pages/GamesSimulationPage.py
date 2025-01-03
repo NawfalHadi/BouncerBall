@@ -74,7 +74,8 @@ class GamesSimulationPage:
             (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3),
             (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3),
             (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4),
-            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4)
+            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4),
+            (START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 2),
         ]
 
         for i, (x, y) in enumerate(positions):
