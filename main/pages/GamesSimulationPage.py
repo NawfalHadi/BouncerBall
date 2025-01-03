@@ -67,16 +67,42 @@ class GamesSimulationPage:
         plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
         self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "L")
         self.player_blue.set_position()
+        self.players_blue = []
+
+        positions = [
+            (START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2),
+            (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3),
+            (START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3),
+            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4),
+            (START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4)
+        ]
+
+        for i, (x, y) in enumerate(positions):
+            player = Player(f"Player Blue {i+1}", x, y, 20, 20, BLUE, GK, "L")
+            player.set_position()
+            self.players_blue.append(player)
 
     def draw_player_blue(self):
-        self.player_blue.draw(self.screen)
+        for player in self.players_blue:
+            player.draw(self.screen)
+
+        # self.player_blue.draw(self.screen)
 
     def update_player_blue(self):
-        self.player_blue.x += self.player_blue.speed_x
-        self.player_blue.y += self.player_blue.speed_y
+        for player in self.players_blue:
+            player.x += player.speed_x
+            player.y += player.speed_y
+
+        for player in self.players_blue:
+            self.check_player_frame_collision(player)
+
+        for i, player1 in enumerate(self.players_blue):
+            for player2 in self.players_blue[i+1:]:
+                if self.check_ball_player_collision(player1.x, player1.y, player1.width, player1.height, player2.x, player2.y, player2.width, player2.height):
+                    player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
+                    player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
 
         # collision check
-        self.check_player_frame_collision(self.player_blue)
         # self.check_gk_frame_collision(self.player_blue)
 
     "== BALL =="
@@ -100,14 +126,15 @@ class GamesSimulationPage:
 
         self.check_ball_frame_collision()
 
-        if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, self.player_blue.x, self.player_blue.y, self.player_blue.width, self.player_blue.height):
-            ball_center_x = self.ball.x + self.ball.width / 2
-            player_center_x = self.player_blue.x + self.player_blue.width / 2
+        for player in self.players_blue:
+            if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, player.x, player.y, player.width, player.height):
+                ball_center_x = self.ball.x + self.ball.width / 2
+                player_center_x = player.x + player.width / 2
 
-            relative_position = (ball_center_x - player_center_x) / (self.player_blue.width / 2)
+                relative_position = (ball_center_x - player_center_x) / (player.width / 2)
 
-            self.ball.speed_x = relative_position * 7
-            self.ball.speed_y = -7
+                self.ball.speed_x = relative_position * 7
+                self.ball.speed_y = -7
 
         "== GAMEPLAY =="
    
