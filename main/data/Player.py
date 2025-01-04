@@ -48,7 +48,6 @@ class Player():
         rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         if rect.collidepoint(cursor_pos):
-            print("Test")
             font = pygame.font.Font(None, 18)
             text = font.render(self.name, True, (BLACK))
             text_rect = text.get_rect(center=(self.x + self.width // 2, self.y + self.height + 10))

@@ -112,6 +112,12 @@ class CreateTeamsPage:
         self.player_number = 0
         self.player_role = None
         self.player_direction = 0
+        
+        try:
+            self.input_player_name.isActive = False
+            self.input_player_number.isActive = False
+        except Exception as e:
+            pass
 
     "== REGISTER PLAYERS =="
 
@@ -191,7 +197,6 @@ class CreateTeamsPage:
         self.input_player_name.isActive = True
         self.text_explanation = "Type your player name, then press Enter"
 
-
     def typing_player_number(self, event):
         if self.input_player_number.isActive:
             if event.key == pygame.K_RETURN:
@@ -252,16 +257,18 @@ class CreateTeamsPage:
         md_count = sum(1 for player in self.players if player["role"] == "MD")
         fw_count = sum(1 for player in self.players if player["role"] == "FW")
 
-        if gk_count == 1:
+        print(gk_count, df_count, md_count, fw_count)
+
+        if gk_count == 1 and self.player_role == "GK":
             self.text_explanation = "You have reached the maximum (1) goalkeeper, press Esc to cancel"
             return False
-        if df_count == 5:
+        if df_count == 5 and self.player_role == "DF":
             self.text_explanation = "You have reached the maximum (5) defender, press Esc to cancel"
             return False
-        if md_count == 5:
+        if md_count == 5 and self.player_role == "MD":
             self.text_explanation = "You have reached the maximum (5) midfielder, press Esc to cancel"
             return False
-        if fw_count == 3:
+        if fw_count == 3 and self.player_role == "FW":
             self.text_explanation = "You have reached the maximum (3) forward, press Esc to cancel"
             return False
         
