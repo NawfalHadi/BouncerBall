@@ -33,7 +33,6 @@ class Player():
         text_rect = text.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
         screen.blit(text, text_rect)
         
-
     def set_position(self):
         if self.side == "L":
             self.x = START_FIELD_WIDHT + self.x

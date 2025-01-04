@@ -31,7 +31,7 @@ class Main:
 
     def create_teams_page(self):
         from main.pages.CreateTeamsPage import CreateTeamsPage
-        CreateTeamsPage().run()
+        CreateTeamsPage(1).run()
 
     def run(self):
         while self.isRunning:

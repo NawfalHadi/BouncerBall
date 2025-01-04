@@ -1,4 +1,5 @@
 import pygame
+import csv
 
 from main.constant.Size import *
 from main.constant.Color import *
@@ -10,7 +11,7 @@ from main.ui.InputText import InputText
 from main.data.Player import Player
 
 class CreateTeamsPage:
-    def __init__(self):
+    def __init__(self, team_id):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Create Teams")
 
@@ -37,7 +38,7 @@ class CreateTeamsPage:
         self.text_explanation = "Click on the field to mark player spots"
 
         self.init_field()
-        # self.init_players()
+        self.init_button()
 
     "== INTERFACE =="
     def update_title(self):
@@ -45,6 +46,12 @@ class CreateTeamsPage:
         self.text_surface = self.font.render(self.text_explanation, True, BLACK)
         self.text_rect = self.text_surface.get_rect(center=(SCREEN_WIDTH // 2, START_FIELD_HEIGHT - 50))
         self.screen.blit(self.text_surface, self.text_rect)
+
+    def init_button(self):
+        self.save_csv = Button("Submit Team", (SCREEN_WIDTH // 2) - 100, SCREEN_HEIGHT - 125, 200, 50, BLACK, RED, action=self.save_players_to_csv)
+    
+    def draw_button(self):
+        self.save_csv.draw(self.screen)
 
     "== FIELD =="
 
@@ -155,12 +162,12 @@ class CreateTeamsPage:
                 button.draw(self.screen)
 
     def set_player_direction(self, direction):
+        self.text_explanation = "Choose the player role"
+
         self.player_direction = direction
         self.isPlayerDirected = True
 
-    def choose_player_role(self):
-        self.text_explanation = "Choose the player role"
-        
+    def choose_player_role(self):        
         button_roles = {
             "GK": (self.player_mark.x - 30, self.player_mark.bottom + 30),
             "DF": (self.player_mark.x + 10, self.player_mark.bottom + 30),
@@ -176,26 +183,34 @@ class CreateTeamsPage:
         
     def set_player_role(self, role):
         self.player_role = role
-        self.isPlayerHasRole = True
+        if self.player_position_available():
+            self.isPlayerHasRole = True
+            self.text_explanation = "Type your player number, then press Enter"
+
     
     def init_input_player_number(self):
         self.input_player_number = InputText(self.player_mark.centerx - 20, self.player_mark.bottom + 20, 40, 40, GRAY, GREEN, 2)
         self.input_player_number.isActive = True
 
     def choose_player_number(self):
-        self.text_explanation = "Type your player number, then press Enter"
-
         self.input_player_number.draw(self.screen)
         self.input_player_number.activate_input()
         self.input_player_number.check_input()
 
     def set_player_number(self):
         self.player_number = self.input_player_number.text
-        self.isPlayerHasNumber = True
-        self.input_player_number.isActive = False
         
-        self.input_player_name.isActive = True
-        self.text_explanation = "Type your player name, then press Enter"
+        if len(self.player_number) > 0 and self.player_number.isdigit():
+            if self.player_number_available():
+                self.isPlayerHasNumber = True
+                self.input_player_number.isActive = False
+                
+                self.input_player_name.isActive = True
+                self.text_explanation = "Type your player name, then press Enter"
+        elif len(self.player_number) == 0:
+            self.text_explanation = "Dont empty the player number"
+        elif not self.player_number.isdigit():
+            self.text_explanation = "Player number must be a number"
 
     def typing_player_number(self, event):
         if self.input_player_number.isActive:
@@ -204,8 +219,9 @@ class CreateTeamsPage:
             elif event.key == pygame.K_BACKSPACE:
                 self.input_player_number.text = self.input_player_number.text[:-1]
             else:
-                self.input_player_number.text += event.unicode
-                self.input_player_number.draw(self.screen)
+                if self.isPlayerHasRole:
+                    self.input_player_number.text += event.unicode
+                    self.input_player_number.draw(self.screen)
 
         elif not self.input_player_number.isActive:
             if event.key == pygame.K_RETURN:
@@ -247,33 +263,6 @@ class CreateTeamsPage:
             elif event.key == pygame.K_BACKSPACE:
                 self.input_player_name.text = self.input_player_name.text[:-1]
 
-    def player_spot_available(self):
-        if len(self.players) == 11:
-            self.text_explanation = "You have reached the maximum player, press Esc to cancel"
-            return False
-        
-        gk_count = sum(1 for player in self.players if player["role"] == "GK")
-        df_count = sum(1 for player in self.players if player["role"] == "DF")
-        md_count = sum(1 for player in self.players if player["role"] == "MD")
-        fw_count = sum(1 for player in self.players if player["role"] == "FW")
-
-        print(gk_count, df_count, md_count, fw_count)
-
-        if gk_count == 1 and self.player_role == "GK":
-            self.text_explanation = "You have reached the maximum (1) goalkeeper, press Esc to cancel"
-            return False
-        if df_count == 5 and self.player_role == "DF":
-            self.text_explanation = "You have reached the maximum (5) defender, press Esc to cancel"
-            return False
-        if md_count == 5 and self.player_role == "MD":
-            self.text_explanation = "You have reached the maximum (5) midfielder, press Esc to cancel"
-            return False
-        if fw_count == 3 and self.player_role == "FW":
-            self.text_explanation = "You have reached the maximum (3) forward, press Esc to cancel"
-            return False
-        
-        return True
-
     def player_saved(self):
         if self.isPlayerHasName and self.isPlayerHasNumber and self.isPlayerHasRole:
             player = {
@@ -294,8 +283,7 @@ class CreateTeamsPage:
             self.isPlayerHasRole = False
             self.isPlayerHasNumber = False
             self.isPlayerHasName = False
-
-
+    
     "== SHOW PLAYERS =="
 
     def show_players(self):
@@ -305,6 +293,89 @@ class CreateTeamsPage:
                 player.set_position()
                 player.draw(self.screen)
                 player.get_names(self.screen)
+
+
+    "== DELETE PLAYERS =="
+
+    "== SUBMIT VALIDATION =="
+
+    def player_spot_available(self):
+        if len(self.players) == 11:
+            self.text_explanation = "You have reached the maximum player, press Esc to cancel"
+            return False        
+        
+        return True
+
+    def player_number_available(self):
+        if self.player_number in [player["number"] for player in self.players]:
+            self.text_explanation = "This player number is already taken, press Esc to cancel"
+            return False
+
+        return True
+    
+    def player_position_available(self):
+        gk_count = sum(1 for player in self.players if player["role"] == "GK")
+        df_count = sum(1 for player in self.players if player["role"] == "DF")
+        md_count = sum(1 for player in self.players if player["role"] == "MD")
+        fw_count = sum(1 for player in self.players if player["role"] == "FW")
+
+        print(gk_count, df_count, md_count, fw_count)
+        
+        if self.player_role == "GK":
+            print("GK")
+            if gk_count == 1:
+                self.text_explanation = "You have reached the maximum (1) goalkeeper, press Esc to cancel"
+                return False
+        if self.player_role == "DF":
+            print("DF")
+            if df_count == 5:
+                self.text_explanation = "You have reached the maximum (5) defender, press Esc to cancel"
+                return False
+        if self.player_role == "MD":
+            print("MD")
+            if md_count == 5:
+                self.text_explanation = "You have reached the maximum (5) midfielder, press Esc to cancel"
+                return False
+        if self.player_role == "FW":
+            print("FW")
+            if fw_count == 3:
+                self.text_explanation = "You have reached the maximum (3) forward, press Esc to cancel"
+                return False
+        
+        print(gk_count, df_count, md_count, fw_count)
+        
+        return True
+
+    "== STORAGE =="
+
+    def save_players_to_csv(self, filename="main/db/Player.csv"):
+        if len(self.players) < 11:
+            self.text_explanation = "You need to fill 11 players"
+        else:
+            try:
+                with open(filename, mode='r', newline='') as file:
+                    reader = csv.reader(file)
+                    existing_players = list(reader)
+                    next_id = len(existing_players)  # Calculate the next id based on existing players
+            except FileNotFoundError:
+                next_id = 1  # If file does not exist, start with id 1
+
+            with open(filename, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                if next_id == 1:
+                    writer.writerow(["id", "name", "number", "role", "id_team", "x", "y", "direction"])
+                for player in self.players:
+                    writer.writerow([
+                        next_id,
+                        player["name"],
+                        player["number"],
+                        player["role"],
+                        player["id_team"],
+                        player["position"][0],
+                        player["position"][1],
+                        player["direction"]
+                    ])
+                    next_id += 1
 
     def run(self):
         while self.isRunning:
@@ -339,6 +410,9 @@ class CreateTeamsPage:
                     if self.player_mark and hasattr(self, 'role_buttons'):
                         for button in self.role_buttons:
                             button.is_clicked(event)
+
+                self.save_csv.is_clicked(event)
+                
                 
 
             self.update_title()
@@ -348,5 +422,6 @@ class CreateTeamsPage:
             self.create_player()
 
             self.show_players()
+            self.draw_button()
 
             pygame.display.update()
