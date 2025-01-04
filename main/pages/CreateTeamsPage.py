@@ -168,7 +168,12 @@ class CreateTeamsPage:
         self.input_player_number.draw(self.screen)
         self.input_player_number.activate_input()
         self.input_player_number.check_input()
-        
+
+    def set_player_number(self):
+        self.player_number = self.input_player_number.text
+        self.isPlayerHasNumber = True
+        self.input_player_number.isActive = False
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -187,19 +192,25 @@ class CreateTeamsPage:
                     if self.isPlayerHasRole:
                         print(self.input_player_number.isActive)
 
+                "== INPUT PLAYER NUMBER =="
+
                 if event.type == pygame.KEYDOWN:
                     if self.input_player_number.isActive:
                         if event.key == pygame.K_RETURN:
-                            print(self.input_player_number.text)
+                            self.set_player_number()
                         elif event.key == pygame.K_BACKSPACE:
                             self.input_player_number.text = self.input_player_number.text[:-1]
                         else:
                             self.input_player_number.text += event.unicode
                             self.input_player_number.draw(self.screen)
+                            
                     elif not self.input_player_number.isActive:
-                        if event.key == pygame.K_BACKSPACE:
+                        if event.key == pygame.K_RETURN:
+                            self.set_player_number()
+                        elif event.key == pygame.K_BACKSPACE:
                             self.input_player_number.text = self.input_player_number.text[:-1]
-                        
+
+                "========================"
 
                 if self.player_mark:
                     if self.player_mark and hasattr(self, 'player_buttons'):

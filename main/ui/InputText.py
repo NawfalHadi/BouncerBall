@@ -3,7 +3,7 @@ import pygame
 from main.constant.Color import *
 
 class InputText:
-    def __init__(self, x, y, width, height, color_inactive, color_active, max_text, text=None):
+    def __init__(self, x, y, width, height, color_inactive, color_active, max_text = 100, text=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color_inactive = color_inactive
         self.color_active = color_active
