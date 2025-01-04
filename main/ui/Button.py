@@ -14,7 +14,7 @@ class Button:
 
     def draw(self, screen, font_color=WHITE, font_hover=BLACK):
         font = pygame.font.Font(None, self.font_size)
-        
+            
         mouse_pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
             pygame.draw.rect(screen, self.hover_color, self.rect)

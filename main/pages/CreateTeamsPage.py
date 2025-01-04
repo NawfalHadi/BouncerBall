@@ -5,6 +5,7 @@ from main.constant.Color import *
 
 from main.ui.Line import Line
 from main.ui.Button import Button
+from main.ui.InputText import InputText
 
 class CreateTeamsPage:
     def __init__(self):
@@ -86,6 +87,9 @@ class CreateTeamsPage:
             self.player_mark = pygame.Rect(x - 25, y - 25, 40, 40)
             self.isPlayerMarking = True
 
+            # Initiate the input text
+            self.init_input_player_number()
+
     def draw_player_spot(self):
         if self.player_mark:
             pygame.draw.rect(self.screen, RED, self.player_mark)
@@ -151,9 +155,20 @@ class CreateTeamsPage:
         
     def set_player_role(self, role):
         self.player_role = role
-        self.isPlayerHasNumber = True
-        self.choose_player_number()
+        self.isPlayerHasRole = True
+    
+    def init_input_player_number(self):
+        self.input_player_number = InputText(self.player_mark.centerx - 20, self.player_mark.bottom + 20, 40, 40, GRAY, GREEN, 2)
+        self.input_player_number.isActive = True
+        print(self.input_player_number.isActive)
 
+    def choose_player_number(self):
+        self.text_explanation = "Type your player number, then press Enter"
+
+        self.input_player_number.draw(self.screen)
+        self.input_player_number.activate_input()
+        self.input_player_number.check_input()
+        
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -166,10 +181,26 @@ class CreateTeamsPage:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     if not self.isPlayerMarking:
                         self.mark_player_spot(event.pos)
-                
+                    if self.isPlayerHasRole:
+                        print(self.input_player_number.isActive)
+
+                if event.type == pygame.KEYDOWN:
+                    if self.input_player_number.isActive:
+                        if event.key == pygame.K_RETURN:
+                            print(self.input_player_number.text)
+                        elif event.key == pygame.K_BACKSPACE:
+                            self.input_player_number.text = self.input_player_number.text[:-1]
+                        else:
+                            self.input_player_number.text += event.unicode
+                            self.input_player_number.draw(self.screen)
+                    elif not self.input_player_number.isActive:
+                        if event.key == pygame.K_BACKSPACE:
+                            self.input_player_number.text = self.input_player_number.text[:-1]
+                        
+
                 if self.player_mark:
                     if self.player_mark and hasattr(self, 'player_buttons'):
                         for button in self.player_buttons:
@@ -177,6 +208,7 @@ class CreateTeamsPage:
                     if self.player_mark and hasattr(self, 'role_buttons'):
                         for button in self.role_buttons:
                             button.is_clicked(event)
+                
 
             self.update_title()
 
