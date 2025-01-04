@@ -2,9 +2,11 @@ import pygame
 
 from main.constant.Size import *
 from main.constant.Position import *
+from main.constant.Color import *
 
 class Player():
     def __init__(self, name, x, y, width, height, color, role, side, number=0, path=None):
+        self.name = name
         self.x, self.y = x, y
         self.color = color
         self.side = side
@@ -34,7 +36,20 @@ class Player():
 
     def set_position(self):
         if self.side == "L":
-            self.x += START_FIELD_WIDHT + self.role
+            self.x = START_FIELD_WIDHT + self.x
+            self.y = START_FIELD_HEIGHT + self.y
         elif self.side == "R":
             self.x += FIELD_WIDTH - self.width
             self.x -= self.role
+
+    def get_names(self, screen):
+        cursor_pos = pygame.mouse.get_pos()
+        
+        rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+        if rect.collidepoint(cursor_pos):
+            print("Test")
+            font = pygame.font.Font(None, 18)
+            text = font.render(self.name, True, (BLACK))
+            text_rect = text.get_rect(center=(self.x + self.width // 2, self.y + self.height + 10))
+            screen.blit(text, text_rect)

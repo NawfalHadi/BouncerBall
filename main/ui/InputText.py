@@ -22,9 +22,9 @@ class InputText:
         screen.blit(txt_surface, (self.rect.x + 5, self.rect.y + 5))
 
     def activate_input(self):
-        mouse_pos = pygame.mouse.get_pos()
+        cursor_pos = pygame.mouse.get_pos()
 
-        if self.rect.collidepoint(mouse_pos):
+        if self.rect.collidepoint(cursor_pos):
             self.color = self.color_active
         else:
             self.color = self.color_inactive

@@ -7,6 +7,8 @@ from main.ui.Line import Line
 from main.ui.Button import Button
 from main.ui.InputText import InputText
 
+from main.data.Player import Player
+
 class CreateTeamsPage:
     def __init__(self):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -35,6 +37,7 @@ class CreateTeamsPage:
         self.text_explanation = "Click on the field to mark player spots"
 
         self.init_field()
+        # self.init_players()
 
     "== INTERFACE =="
     def update_title(self):
@@ -82,7 +85,7 @@ class CreateTeamsPage:
     "== MARKING =="
     def mark_player_spot(self, pos):
         x, y = pos
-        if START_FIELD_WIDHT <= x <= START_FIELD_WIDHT + FIELD_WIDTH and START_FIELD_HEIGHT <= y <= START_FIELD_HEIGHT + FIELD_HEIGHT:
+        if START_FIELD_WIDHT <= x <= START_FIELD_WIDHT + (FIELD_WIDTH / 2)  and START_FIELD_HEIGHT <= y <= START_FIELD_HEIGHT + FIELD_HEIGHT:
             self.text_explanation = "Choose the player direction when games start \nEsc to cancel"
             self.player_mark = pygame.Rect(x - 25, y - 25, 40, 40)
             self.isPlayerMarking = True
@@ -91,7 +94,6 @@ class CreateTeamsPage:
             self.init_input_player_number()
             self.init_input_player_name()
 
-
     def draw_player_spot(self):
         if self.player_mark:
             pygame.draw.rect(self.screen, RED, self.player_mark)
@@ -99,7 +101,7 @@ class CreateTeamsPage:
     def cancel_marking(self):
         self.isPlayerMarking = False
         self.player_mark = None
-        self.text_explanation = "Click on the field to mark player spots"
+        self.text_explanation = "Click on the left area of the field to mark player spots"
 
         self.isPlayerDirected = False
         self.isPlayerHasName = False
@@ -187,6 +189,8 @@ class CreateTeamsPage:
         self.input_player_number.isActive = False
         
         self.input_player_name.isActive = True
+        self.text_explanation = "Type your player name, then press Enter"
+
 
     def typing_player_number(self, event):
         if self.input_player_number.isActive:
@@ -208,7 +212,6 @@ class CreateTeamsPage:
         self.input_player_name = InputText(self.player_mark.centerx - 100, self.player_mark.bottom + 20, 200, 40, GRAY, GREEN, 100)
 
     def choose_player_name(self):
-        self.text_explanation = "Type your player name, then press Enter"
 
         self.input_player_name.draw(self.screen)
         self.input_player_name.activate_input()
@@ -216,12 +219,13 @@ class CreateTeamsPage:
 
     def set_player_name(self):
         if len(self.input_player_name.text) > 0:
-            self.player_name = self.input_player_name.text
-            self.isPlayerHasName = True
-            self.input_player_name.isActive = False
-
-            self.player_saved()
+            if self.player_spot_available():
+                self.player_name = self.input_player_name.text
+                self.isPlayerHasName = True
+                self.input_player_name.isActive = False
             
+                self.player_saved()
+                
     def typing_player_name(self, event):
         if self.input_player_name.isActive:
             if event.key == pygame.K_RETURN:
@@ -238,6 +242,31 @@ class CreateTeamsPage:
             elif event.key == pygame.K_BACKSPACE:
                 self.input_player_name.text = self.input_player_name.text[:-1]
 
+    def player_spot_available(self):
+        if len(self.players) == 11:
+            self.text_explanation = "You have reached the maximum player, press Esc to cancel"
+            return False
+        
+        gk_count = sum(1 for player in self.players if player["role"] == "GK")
+        df_count = sum(1 for player in self.players if player["role"] == "DF")
+        md_count = sum(1 for player in self.players if player["role"] == "MD")
+        fw_count = sum(1 for player in self.players if player["role"] == "FW")
+
+        if gk_count == 1:
+            self.text_explanation = "You have reached the maximum (1) goalkeeper, press Esc to cancel"
+            return False
+        if df_count == 5:
+            self.text_explanation = "You have reached the maximum (5) defender, press Esc to cancel"
+            return False
+        if md_count == 5:
+            self.text_explanation = "You have reached the maximum (5) midfielder, press Esc to cancel"
+            return False
+        if fw_count == 3:
+            self.text_explanation = "You have reached the maximum (3) forward, press Esc to cancel"
+            return False
+        
+        return True
+
     def player_saved(self):
         if self.isPlayerHasName and self.isPlayerHasNumber and self.isPlayerHasRole:
             player = {
@@ -245,10 +274,12 @@ class CreateTeamsPage:
                 "number": self.player_number,
                 "role": self.player_role,
                 "direction": self.player_direction,
-                "position": self.player_mark.center,
+                "position": (self.player_mark.center[0] - START_FIELD_WIDHT, self.player_mark.center[1] - START_FIELD_HEIGHT),
                 "id_team": 1
             }
+
             self.players.append(player)
+            
 
             self.player_mark = None
             self.isPlayerMarking = False
@@ -257,8 +288,16 @@ class CreateTeamsPage:
             self.isPlayerHasNumber = False
             self.isPlayerHasName = False
 
-        print(self.players)
 
+    "== SHOW PLAYERS =="
+
+    def show_players(self):
+        if len(self.players) > 0:
+            for player in self.players:
+                player = Player(player["name"], player["position"][0], player["position"][1], 40, 40, RED, player["role"], "L", player["number"])
+                player.set_position()
+                player.draw(self.screen)
+                player.get_names(self.screen)
 
     def run(self):
         while self.isRunning:
@@ -269,7 +308,6 @@ class CreateTeamsPage:
             if keys[pygame.K_ESCAPE]:
                 self.cancel_marking()
             
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
@@ -280,9 +318,11 @@ class CreateTeamsPage:
                 "== INPUT PLAYER NUMBER =="
 
                 if event.type == pygame.KEYDOWN:
-                    self.typing_player_number(event)
-                    self.typing_player_name(event)
-                
+                    try:
+                        self.typing_player_number(event)
+                        self.typing_player_name(event)
+                    except Exception as e:
+                        pass
                 "========================"
 
                 if self.player_mark:
@@ -299,5 +339,7 @@ class CreateTeamsPage:
             self.draw_field()
             self.draw_player_spot() 
             self.create_player()
+
+            self.show_players()
 
             pygame.display.update()
