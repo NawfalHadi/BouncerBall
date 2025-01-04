@@ -12,9 +12,6 @@ class InputText:
         self.max_text = max_text
         self.isActive = False
 
-        
-            
-
     def draw(self, screen):
         font = pygame.font.Font(None, 32)
 
@@ -34,7 +31,7 @@ class InputText:
 
     def check_input(self):
         if self.text:
-            if len(self.text) == 2:
+            if len(self.text) == self.max_text:
                 self.isActive = False
-            elif len(self.text) < 2:
+            elif len(self.text) < self.max_text:
                 self.isActive = True

@@ -89,6 +89,8 @@ class CreateTeamsPage:
 
             # Initiate the input text
             self.init_input_player_number()
+            self.init_input_player_name()
+
 
     def draw_player_spot(self):
         if self.player_mark:
@@ -98,6 +100,16 @@ class CreateTeamsPage:
         self.isPlayerMarking = False
         self.player_mark = None
         self.text_explanation = "Click on the field to mark player spots"
+
+        self.isPlayerDirected = False
+        self.isPlayerHasName = False
+        self.isPlayerHasNumber = False
+        self.isPlayerHasRole = False
+        
+        self.player_name = None
+        self.player_number = 0
+        self.player_role = None
+        self.player_direction = 0
 
     "== REGISTER PLAYERS =="
 
@@ -109,8 +121,9 @@ class CreateTeamsPage:
                 self.choose_player_role()
             elif not self.isPlayerHasNumber:
                 self.choose_player_number()
+            elif not self.isPlayerHasName:
+                self.choose_player_name()
             
-    
     def choose_player_direction(self):
         if self.player_mark:
             button_positions = {
@@ -160,7 +173,6 @@ class CreateTeamsPage:
     def init_input_player_number(self):
         self.input_player_number = InputText(self.player_mark.centerx - 20, self.player_mark.bottom + 20, 40, 40, GRAY, GREEN, 2)
         self.input_player_number.isActive = True
-        print(self.input_player_number.isActive)
 
     def choose_player_number(self):
         self.text_explanation = "Type your player number, then press Enter"
@@ -173,6 +185,80 @@ class CreateTeamsPage:
         self.player_number = self.input_player_number.text
         self.isPlayerHasNumber = True
         self.input_player_number.isActive = False
+        
+        self.input_player_name.isActive = True
+
+    def typing_player_number(self, event):
+        if self.input_player_number.isActive:
+            if event.key == pygame.K_RETURN:
+                self.set_player_number()
+            elif event.key == pygame.K_BACKSPACE:
+                self.input_player_number.text = self.input_player_number.text[:-1]
+            else:
+                self.input_player_number.text += event.unicode
+                self.input_player_number.draw(self.screen)
+
+        elif not self.input_player_number.isActive:
+            if event.key == pygame.K_RETURN:
+                self.set_player_number()
+            elif event.key == pygame.K_BACKSPACE:
+                self.input_player_number.text = self.input_player_number.text[:-1]
+
+    def init_input_player_name(self):
+        self.input_player_name = InputText(self.player_mark.centerx - 100, self.player_mark.bottom + 20, 200, 40, GRAY, GREEN, 100)
+
+    def choose_player_name(self):
+        self.text_explanation = "Type your player name, then press Enter"
+
+        self.input_player_name.draw(self.screen)
+        self.input_player_name.activate_input()
+        self.input_player_name.check_input()
+
+    def set_player_name(self):
+        if len(self.input_player_name.text) > 0:
+            self.player_name = self.input_player_name.text
+            self.isPlayerHasName = True
+            self.input_player_name.isActive = False
+
+            self.player_saved()
+            
+    def typing_player_name(self, event):
+        if self.input_player_name.isActive:
+            if event.key == pygame.K_RETURN:
+                self.set_player_name()
+            elif event.key == pygame.K_BACKSPACE:
+                self.input_player_name.text = self.input_player_name.text[:-1]
+            else:
+                self.input_player_name.text += event.unicode
+                self.input_player_name.draw(self.screen)
+
+        elif not self.input_player_name.isActive:
+            if event.key == pygame.K_RETURN:
+                self.set_player_name()
+            elif event.key == pygame.K_BACKSPACE:
+                self.input_player_name.text = self.input_player_name.text[:-1]
+
+    def player_saved(self):
+        if self.isPlayerHasName and self.isPlayerHasNumber and self.isPlayerHasRole:
+            player = {
+                "name": self.player_name,
+                "number": self.player_number,
+                "role": self.player_role,
+                "direction": self.player_direction,
+                "position": self.player_mark.center,
+                "id_team": 1
+            }
+            self.players.append(player)
+
+            self.player_mark = None
+            self.isPlayerMarking = False
+            self.isPlayerDirected = False
+            self.isPlayerHasRole = False
+            self.isPlayerHasNumber = False
+            self.isPlayerHasName = False
+
+        print(self.players)
+
 
     def run(self):
         while self.isRunning:
@@ -182,6 +268,7 @@ class CreateTeamsPage:
 
             if keys[pygame.K_ESCAPE]:
                 self.cancel_marking()
+            
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -189,27 +276,13 @@ class CreateTeamsPage:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if not self.isPlayerMarking:
                         self.mark_player_spot(event.pos)
-                    if self.isPlayerHasRole:
-                        print(self.input_player_number.isActive)
 
                 "== INPUT PLAYER NUMBER =="
 
                 if event.type == pygame.KEYDOWN:
-                    if self.input_player_number.isActive:
-                        if event.key == pygame.K_RETURN:
-                            self.set_player_number()
-                        elif event.key == pygame.K_BACKSPACE:
-                            self.input_player_number.text = self.input_player_number.text[:-1]
-                        else:
-                            self.input_player_number.text += event.unicode
-                            self.input_player_number.draw(self.screen)
-                            
-                    elif not self.input_player_number.isActive:
-                        if event.key == pygame.K_RETURN:
-                            self.set_player_number()
-                        elif event.key == pygame.K_BACKSPACE:
-                            self.input_player_number.text = self.input_player_number.text[:-1]
-
+                    self.typing_player_number(event)
+                    self.typing_player_name(event)
+                
                 "========================"
 
                 if self.player_mark:
