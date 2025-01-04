@@ -20,6 +20,7 @@ class CreateTeamsPage:
         self.isRunning = True
 
         "== PLAYER =="
+        self.id_team = team_id
         self.players = []
         self.player_mark = None
         self.player_direction = 0
@@ -223,7 +224,7 @@ class CreateTeamsPage:
                     self.input_player_number.text += event.unicode
                     self.input_player_number.draw(self.screen)
 
-        elif not self.input_player_number.isActive:
+        elif not self.input_player_number.isActive and not self.isPlayerHasNumber:
             if event.key == pygame.K_RETURN:
                 self.set_player_number()
             elif event.key == pygame.K_BACKSPACE:
@@ -271,7 +272,7 @@ class CreateTeamsPage:
                 "role": self.player_role,
                 "direction": self.player_direction,
                 "position": (self.player_mark.center[0] - START_FIELD_WIDHT, self.player_mark.center[1] - START_FIELD_HEIGHT),
-                "id_team": 1
+                "id_team": self.id_team
             }
 
             self.players.append(player)
