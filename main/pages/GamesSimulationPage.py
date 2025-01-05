@@ -1,5 +1,6 @@
 import pygame
 import math
+import csv
 
 from main.constant.Size import *
 from main.constant.Color import *
@@ -23,6 +24,8 @@ class GamesSimulationPage:
         self.isFirstTouch = True
 
         self.init_field()
+        self.load_players_blue()
+        self.load_players_red()
         self.init_player()
         self.init_ball()
 
@@ -62,9 +65,71 @@ class GamesSimulationPage:
         self.gk_right_vertical.draw(self.screen)
 
     "== PLAYER =="
-    
+    def load_players_blue(self):
+        self.players_blue = []
+        with open('main/db/Player.csv', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['role'] == 'GK':
+                    role = GK
+                elif row['role'] == 'DF':
+                    role = DF
+                elif row['role'] == 'MD':
+                    role = MF
+                elif row['role'] == 'FW':
+                    role = FW
+                else:
+                    continue
+
+                player = Player(
+                    name=row['name'],
+                    x=float(row['x']),
+                    y=float(row['y']),
+                    width=20,
+                    height=20,
+                    color=BLUE,
+                    role=role,
+                    side="R",
+                    number= row['number']
+                )
+                
+                player.set_position()
+                self.players_blue.append(player)
+
+    def load_players_red(self):
+        self.players_red = []
+        with open('main/db/Player.csv', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['role'] == 'GK':
+                    role = GK
+                elif row['role'] == 'DF':
+                    role = DF
+                elif row['role'] == 'MD':
+                    role = MF
+                elif row['role'] == 'FW':
+                    role = FW
+                else:
+                    continue
+
+                player = Player(
+                    name=row['name'],
+                    x=float(row['x']),
+                    y=float(row['y']),
+                    width=20,
+                    height=20,
+                    color=RED,
+                    role=role,
+                    side="L",
+                    number=row['number']
+                )
+                
+                player.set_position()
+                self.players_red.append(player)
+
     def init_player(self):
         self.init_player_blue()
+        
 
     def init_player_blue(self):
         # plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
@@ -72,23 +137,25 @@ class GamesSimulationPage:
         # self.player_blue.set_position()
         # self.players_blue = []
 
-        self.players_blue = [
-            Player("Player Blue 1", START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, GK, "L"),
-            Player("Player Blue 2", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
-            Player("Player Blue 3", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
-            Player("Player Blue 4", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
-            Player("Player Blue 5", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
-            Player("Player Blue 6", START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, FW, "L"),
-        ]
+        # self.players_blue = [
+        #     Player("Player Blue 1", START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, GK, "L"),
+        #     Player("Player Blue 2", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
+        #     Player("Player Blue 3", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
+        #     Player("Player Blue 4", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
+        #     Player("Player Blue 5", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
+        #     Player("Player Blue 6", START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, FW, "L"),
+        # ]
 
-        for player in self.players_blue:
-            player.set_position()
-
+        # for player in self.players_blue:
+        #     player.set_position()
+        pass
 
     def draw_player_blue(self):
         for player in self.players_blue:
             player.draw(self.screen)
 
+        for players in self.players_red:
+            players.draw(self.screen)
         # self.player_blue.draw(self.screen)
 
     def update_player_blue(self):
@@ -105,8 +172,20 @@ class GamesSimulationPage:
                     player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
                     player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
 
-        # collision check
-        # self.check_gk_frame_collision(self.player_blue)
+
+    def update_player_red(self):
+        for player in self.players_red:
+            player.x += player.speed_x
+            player.y += player.speed_y
+
+        for player in self.players_red:
+            self.check_player_frame_collision(player)
+
+        for i, player1 in enumerate(self.players_red):
+            for player2 in self.players_red[i+1:]:
+                if self.check_ball_player_collision(player1.x, player1.y, player1.width, player1.height, player2.x, player2.y, player2.width, player2.height):
+                    player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
+                    player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
 
     "== BALL =="
 
@@ -133,6 +212,17 @@ class GamesSimulationPage:
         self.check_ball_frame_collision()
 
         for player in self.players_blue:
+            if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, player.x, player.y, player.width, player.height):
+                self.isFirstTouch = False
+                ball_center_x = self.ball.x + self.ball.width / 2
+                player_center_x = player.x + player.width / 2
+
+                relative_position = (ball_center_x - player_center_x) / (player.width / 2)
+
+                self.ball.speed_x = relative_position * 7
+                self.ball.speed_y = -7
+
+        for player in self.players_red:
             if self.check_ball_player_collision(self.ball.x, self.ball.y, self.ball.width, self.ball.height, player.x, player.y, player.width, player.height):
                 self.isFirstTouch = False
                 ball_center_x = self.ball.x + self.ball.width / 2
@@ -239,6 +329,7 @@ class GamesSimulationPage:
 
             self.draw_player_blue()
             self.update_player_blue()
+            self.update_player_red()
 
 
             pygame.display.update()

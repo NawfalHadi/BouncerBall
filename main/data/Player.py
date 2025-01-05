@@ -38,8 +38,8 @@ class Player():
             self.x = START_FIELD_WIDHT + self.x
             self.y = START_FIELD_HEIGHT + self.y
         elif self.side == "R":
-            self.x += FIELD_WIDTH - self.width
-            self.x -= self.role
+            self.x = (FIELD_WIDTH + START_FIELD_WIDHT - self.width) - self.x
+            self.y = START_FIELD_HEIGHT + self.y
 
     def get_names(self, screen):
         cursor_pos = pygame.mouse.get_pos()
