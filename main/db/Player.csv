@@ -8,5 +8,5 @@ id,name,number,role,id_team,x,y,direction
 7,kante,40,MD,1,446.0,508.0,7
 8,ronaldo,3,MD,1,453.0,236.0,1
 9,robeto carlos,2,DF,1,106.0,89.0,1
-10,carvalho,8,GK,1,259.0,313.0,0
+10,carvalho,8,DF,1,259.0,313.0,0
 11,lewandoski,9,FW,1,558.0,378.0,4

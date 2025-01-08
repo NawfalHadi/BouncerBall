@@ -37,15 +37,23 @@ class GamesSimulationPage:
         self.top_field = Line((START_FIELD_WIDHT, START_FIELD_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_HEIGHT), BLACK)
         self.bottom_field = Line((START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_HEIGHT + FIELD_HEIGHT), BLACK)
 
-        self.top_gk_left_field = Line((START_FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_GK_WIDHT + FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT), RED)
-        self.bottom_gk_left_field = Line((START_FIELD_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), RED)
-        self.gk_left_vertical = Line((START_FIELD_WIDHT + FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
+        self.top_gk_left_field = Line((START_FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_GK_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), RED)
+        self.bottom_gk_left_field = Line((START_FIELD_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), RED)
+        self.gk_left_vertical = Line((START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
+
+        self.top_df_left_field = Line((START_FIELD_WIDHT, START_FIELD_DF_HEIGHT), (START_FIELD_DF_WIDHT + FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT), BLACK)
+        self.bottom_df_left_field = Line((START_FIELD_WIDHT, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), (START_FIELD_WIDHT + FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), BLACK)
+        self.df_left_vertical = Line((START_FIELD_WIDHT + FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT), (START_FIELD_WIDHT + FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), BLACK)
 
         self.center_field = Line((START_FIELD_WIDHT + FIELD_WIDTH // 2, START_FIELD_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH // 2, START_FIELD_HEIGHT + FIELD_HEIGHT), BLACK)
 
-        self.top_gk_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_GK_HEIGHT), RED)
-        self.bottom_gk_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), RED)
-        self.gk_right_vertical = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
+        self.top_gk_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_GK_HEIGHT), BLACK)
+        self.bottom_gk_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
+        self.gk_right_vertical = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH - FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
+
+        self.top_df_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_DF_HEIGHT), BLACK)
+        self.bottom_df_right_field = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), BLACK)
+        self.df_right_vertical = Line((START_FIELD_WIDHT + FIELD_WIDTH - FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH - FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT + FIELD_DF_HEIGHT), BLACK)
 
     def draw_field(self):
         self.left_field.draw(self.screen)
@@ -57,6 +65,10 @@ class GamesSimulationPage:
         self.bottom_gk_left_field.draw(self.screen)
         self.gk_left_vertical.draw(self.screen)
 
+        self.top_df_left_field.draw(self.screen)
+        self.bottom_df_left_field.draw(self.screen)
+        self.df_left_vertical.draw(self.screen)
+
         self.center_field.draw(self.screen)
         self.center_circle = pygame.draw.circle(self.screen, BLACK, (START_FIELD_WIDHT + FIELD_WIDTH / 2, START_FIELD_HEIGHT + FIELD_HEIGHT / 2), 73, 2)
         
@@ -64,23 +76,16 @@ class GamesSimulationPage:
         self.bottom_gk_right_field.draw(self.screen)
         self.gk_right_vertical.draw(self.screen)
 
+        self.top_df_right_field.draw(self.screen)
+        self.bottom_df_right_field.draw(self.screen)
+        self.df_right_vertical.draw(self.screen)
+
     "== PLAYER =="
     def load_players_blue(self):
         self.players_blue = []
         with open('main/db/Player.csv', mode='r') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                if row['role'] == 'GK':
-                    role = GK
-                elif row['role'] == 'DF':
-                    role = DF
-                elif row['role'] == 'MD':
-                    role = MF
-                elif row['role'] == 'FW':
-                    role = FW
-                else:
-                    continue
-
                 player = Player(
                     name=row['name'],
                     x=float(row['x']),
@@ -88,7 +93,7 @@ class GamesSimulationPage:
                     width=20,
                     height=20,
                     color=BLUE,
-                    role=role,
+                    role=row['role'],
                     side="R",
                     number= row['number']
                 )
@@ -101,17 +106,6 @@ class GamesSimulationPage:
         with open('main/db/Player.csv', mode='r') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                if row['role'] == 'GK':
-                    role = GK
-                elif row['role'] == 'DF':
-                    role = DF
-                elif row['role'] == 'MD':
-                    role = MF
-                elif row['role'] == 'FW':
-                    role = FW
-                else:
-                    continue
-
                 player = Player(
                     name=row['name'],
                     x=float(row['x']),
@@ -119,7 +113,7 @@ class GamesSimulationPage:
                     width=20,
                     height=20,
                     color=RED,
-                    role=role,
+                    role=row['role'],
                     side="L",
                     number=row['number']
                 )
@@ -164,7 +158,14 @@ class GamesSimulationPage:
             player.y += player.speed_y
 
         for player in self.players_blue:
-            self.check_player_frame_collision(player)
+            if player.role == "GK":
+                self.check_gk_frame_collision(player)
+            elif player.role == "DF":
+                self.check_df_frame_collision(player)
+            elif player.role == "MD":
+                self.check_md_frame_collision(player)
+            else:
+                self.check_player_frame_collision(player)
 
         for i, player1 in enumerate(self.players_blue):
             for player2 in self.players_blue[i+1:]:
@@ -172,14 +173,20 @@ class GamesSimulationPage:
                     player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
                     player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
 
-
     def update_player_red(self):
         for player in self.players_red:
             player.x += player.speed_x
             player.y += player.speed_y
 
         for player in self.players_red:
-            self.check_player_frame_collision(player)
+            if player.role == "GK":
+                self.check_gk_frame_collision(player)
+            elif player.role == "DF":
+                self.check_df_frame_collision(player)
+            elif player.role == "MD":
+                self.check_md_frame_collision(player)
+            else:
+                self.check_player_frame_collision(player)
 
         for i, player1 in enumerate(self.players_red):
             for player2 in self.players_red[i+1:]:
@@ -287,6 +294,58 @@ class GamesSimulationPage:
             right = self.right_field.get_rect().left
             bottom = self.bottom_gk_right_field.get_rect().top
         
+        if player.x <= left:
+            player.x = left
+            player.speed_x = -player.speed_x
+        if player.x + player.width >= right:
+            player.x = right - player.width
+            player.speed_x = -player.speed_x
+        if player.y <= top:
+            player.y = top
+            player.speed_y = -player.speed_y
+        if player.y + player.height >= bottom:
+            player.y = bottom - player.height
+            player.speed_y = -player.speed_y
+
+    def check_df_frame_collision(self, player):
+        if player.side == "L":
+            top = self.top_field.get_rect().top
+            left = self.left_field.get_rect().left
+            right = self.center_field.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+        
+        elif player.side == "R":
+            top = self.top_field.get_rect().top
+            left = self.center_field.get_rect().left
+            right = self.right_field.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+
+        if player.x <= left:
+            player.x = left
+            player.speed_x = -player.speed_x
+        if player.x + player.width >= right:
+            player.x = right - player.width
+            player.speed_x = -player.speed_x
+        if player.y <= top:
+            player.y = top
+            player.speed_y = -player.speed_y
+        if player.y + player.height >= bottom:
+            player.y = bottom - player.height
+            player.speed_y = -player.speed_y
+
+    def check_md_frame_collision(self, player):
+        if player.side == "L":
+            top = self.top_field.get_rect().top
+            left = self.gk_left_vertical.get_rect().left
+            right = self.df_right_vertical.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+        
+        elif player.side == "R":
+            top = self.top_field.get_rect().top
+            left = self.df_left_vertical.get_rect().left
+            right = self.gk_right_vertical.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+
         if player.x <= left:
             player.x = left
             player.speed_x = -player.speed_x
