@@ -123,26 +123,7 @@ class GamesSimulationPage:
 
     def init_player(self):
         self.init_player_blue()
-        
 
-    def init_player_blue(self):
-        # plyr_x, plyr_y = START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT // 2
-        # self.player_blue = Player("Player Blue", plyr_x, plyr_y, 20, 20, BLUE, GK, "L")
-        # self.player_blue.set_position()
-        # self.players_blue = []
-
-        # self.players_blue = [
-        #     Player("Player Blue 1", START_FIELD_WIDHT + 50, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, GK, "L"),
-        #     Player("Player Blue 2", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
-        #     Player("Player Blue 3", START_FIELD_WIDHT + 100, START_FIELD_HEIGHT + 2 * FIELD_HEIGHT // 3, 20, 20, BLUE, DF, "L"),
-        #     Player("Player Blue 4", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
-        #     Player("Player Blue 5", START_FIELD_WIDHT + 150, START_FIELD_HEIGHT + 3 * FIELD_HEIGHT // 4, 20, 20, BLUE, MF, "L"),
-        #     Player("Player Blue 6", START_FIELD_WIDHT + 200, START_FIELD_HEIGHT + FIELD_HEIGHT // 2, 20, 20, BLUE, FW, "L"),
-        # ]
-
-        # for player in self.players_blue:
-        #     player.set_position()
-        pass
 
     def draw_player_blue(self):
         for player in self.players_blue:
@@ -380,6 +361,7 @@ class GamesSimulationPage:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
+                    pygame.quit()
 
             self.draw_field()
 
