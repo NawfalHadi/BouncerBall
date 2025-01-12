@@ -12,8 +12,7 @@ from main.data.Player import Player
 
 
 class GamesSimulationPage:
-    def __init__(self, left_team=None, right_team=None):
-        pygame.init()
+    def __init__(self, left_team=None, right_team=None): 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         
         "== PAGE STATE =="
@@ -26,7 +25,7 @@ class GamesSimulationPage:
         self.init_field()
         self.load_players_blue()
         self.load_players_red()
-        self.init_player()
+        # self.init_player()
         self.init_ball()
 
     "== FIELD =="
@@ -361,7 +360,7 @@ class GamesSimulationPage:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
-                    pygame.quit()
+                
 
             self.draw_field()
 
