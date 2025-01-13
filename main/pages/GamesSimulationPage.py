@@ -290,9 +290,19 @@ class GamesSimulationPage:
     def check_df_frame_collision(self, player):
         if player.side == "L":
             top = self.top_field.get_rect().top
-            left = self.left_field.get_rect().left
+            left = self.gk_left_vertical.get_rect().left
             right = self.center_field.get_rect().left
             bottom = self.bottom_field.get_rect().top
+
+            if player.y < self.top_gk_left_field.get_rect().top or player.y > self.bottom_gk_left_field.get_rect().top:
+                left = self.left_field.get_rect().left              
+
+            if player.x < self.gk_left_vertical.get_rect().left:
+                if player.y < self.top_gk_left_field.get_rect().top:
+                    bottom = self.top_gk_left_field.get_rect().top
+                elif player.y > self.bottom_gk_left_field.get_rect().top:
+                    top = self.bottom_gk_left_field.get_rect().top
+
         
         elif player.side == "R":
             top = self.top_field.get_rect().top
@@ -374,5 +384,6 @@ class GamesSimulationPage:
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
+
 
 
