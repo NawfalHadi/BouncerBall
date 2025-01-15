@@ -1,20 +1,29 @@
 import csv
 
-class Team():
-    def __init__(self, id_team):
-        self.db_path = "main/db/Team.db"
-        self.load_teams(id_team)
-    
-    def load_teams(self, id_team):
-        with open('main/data/teams.csv', mode='r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                if int(row['id']) == id_team:
-                    self.id = row['id']
-                    self.name = row['name']
-                    self.color = row['color']
-                    self.nickname = row['nickname']
-                    break
+from main.data.Player import Player
 
-    def load_players(self):
-        pass
+class Team():
+    def __init__(self, id_team, name, nickname, color):
+        self.id = id_team
+        self.name = name
+        self.nickname = nickname
+        self.color = color
+
+    def load_players(id_team):
+        players = []
+        with open('main/data/Player.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if int(row['id_team']) == id_team:
+                    player = Player(
+                    id=int(row['id']),
+                    name=row['name'],
+                    number=int(row['number']),
+                    role=row['role'],
+                    id_team=int(row['id_team']),
+                    x=float(row['x']),
+                    y=float(row['y']),
+                    direction=int(row['direction'])
+                    )
+                    players.append(player)
+        return players
