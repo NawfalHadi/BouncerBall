@@ -94,7 +94,8 @@ class GamesSimulationPage:
                     color=BLUE,
                     role=row['role'],
                     side="R",
-                    number= row['number']
+                    number= row['number'],
+                    path=row['direction']
                 )
                 
                 player.set_position()
@@ -114,7 +115,8 @@ class GamesSimulationPage:
                     color=RED,
                     role=row['role'],
                     side="L",
-                    number=row['number']
+                    number=row['number'],
+                    path=row['direction']
                 )
                 
                 player.set_position()
@@ -122,7 +124,6 @@ class GamesSimulationPage:
 
     def init_player(self):
         self.init_player_blue()
-
 
     def draw_player_blue(self):
         for player in self.players_blue:
@@ -134,8 +135,12 @@ class GamesSimulationPage:
 
     def update_player_blue(self):
         for player in self.players_blue:
-            player.x += player.speed_x
-            player.y += player.speed_y
+            if not player.isStartMove:
+                player.x += player.speed_x
+                player.y += player.speed_y
+            else:
+                # self.start_move_player_blue(player)
+                pass
 
         for player in self.players_blue:
             if player.role == "GK":
@@ -152,11 +157,15 @@ class GamesSimulationPage:
                 if self.check_ball_player_collision(player1.x, player1.y, player1.width, player1.height, player2.x, player2.y, player2.width, player2.height):
                     player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
                     player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
-
+    
     def update_player_red(self):
         for player in self.players_red:
-            player.x += player.speed_x
-            player.y += player.speed_y
+            if not player.isStartMove:
+                player.x += player.speed_x
+                player.y += player.speed_y
+            else:
+                
+                self.start_move_player_red(player)
 
         for player in self.players_red:
             if player.role == "GK":
@@ -171,8 +180,32 @@ class GamesSimulationPage:
         for i, player1 in enumerate(self.players_red):
             for player2 in self.players_red[i+1:]:
                 if self.check_ball_player_collision(player1.x, player1.y, player1.width, player1.height, player2.x, player2.y, player2.width, player2.height):
+                    player1.isStartMove = False
+                    player2.isStartMove = False
                     player1.speed_x, player2.speed_x = player2.speed_x, player1.speed_x
                     player1.speed_y, player2.speed_y = player2.speed_y, player1.speed_y
+    
+    def start_move_player_red(self, player):
+        if player.path == "0":
+            player.x -= player.speed_x
+        elif player.path == "1":
+            player.x -= player.speed_x
+            player.y -= player.speed_y
+        elif player.path == "2":
+            player.y -= player.speed_y
+        elif player.path == "3":
+            player.x += player.speed_x
+            player.y -= player.speed_y
+        elif player.path == "4":
+            player.x += player.speed_x
+        elif player.path == "5":
+            player.x += player.speed_x
+            player.y += player.speed_y
+        elif player.path == "6":
+            player.y += player.speed_y
+        elif player.path == "7":
+            player.x -= player.speed_x
+            player.y += player.speed_y 
 
     "== BALL =="
 
@@ -275,15 +308,19 @@ class GamesSimulationPage:
             bottom = self.bottom_gk_right_field.get_rect().top
         
         if player.x <= left:
+            
             player.x = left
             player.speed_x = -player.speed_x
         if player.x + player.width >= right:
+            
             player.x = right - player.width
             player.speed_x = -player.speed_x
         if player.y <= top:
+            
             player.y = top
             player.speed_y = -player.speed_y
         if player.y + player.height >= bottom:
+            
             player.y = bottom - player.height
             player.speed_y = -player.speed_y
 
@@ -300,8 +337,8 @@ class GamesSimulationPage:
             if player.x < self.gk_left_vertical.get_rect().left:
                 if player.y < self.top_gk_left_field.get_rect().top:
                     bottom = self.top_gk_left_field.get_rect().top
-                elif player.y > self.bottom_gk_left_field.get_rect().top:
-                    top = self.bottom_gk_left_field.get_rect().top
+                elif player.y > self.bottom_gk_left_field.get_rect().bottom:
+                    top = self.bottom_gk_left_field.get_rect().bottom
 
         
         elif player.side == "R":
@@ -329,6 +366,17 @@ class GamesSimulationPage:
             left = self.gk_left_vertical.get_rect().left
             right = self.df_right_vertical.get_rect().left
             bottom = self.bottom_field.get_rect().top
+
+            if player.y < self.top_gk_left_field.get_rect().top or player.y > self.bottom_gk_left_field.get_rect().top:
+                left = self.left_field.get_rect().left
+
+            if player.x < self.gk_left_vertical.get_rect().left:
+                if player.y < self.top_gk_left_field.get_rect().top:
+                    bottom = self.top_gk_left_field.get_rect().top
+                elif player.y > self.bottom_gk_left_field.get_rect().top:
+                    top = self.bottom_gk_left_field.get_rect().bottom
+                    
+                        
         
         elif player.side == "R":
             top = self.top_field.get_rect().top
