@@ -23,11 +23,11 @@ class CreateLeaguePage:
         self.player_list = None
 
         "== CURSOR STATE =="
-        self.cursor_index = 5
+        self.cursor_index = 4
         self.current_team = self.teams_list[self.cursor_index]
 
         self.init_field()
-        self.load_player(self.current_team.id)
+        self.load_player(int(self.current_team.id))
 
     "== FIELD =="
 
@@ -86,7 +86,7 @@ class CreateLeaguePage:
         with open('main/db/Player.csv', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if int(row['id_team']) == 5:
+                if int(row['id_team']) == id_team:
                     player = Player(
                     name=row['name'],
                     x=float(row['x']),
@@ -107,27 +107,49 @@ class CreateLeaguePage:
 
     "== CHOOSE TEAM =="
 
+    def update_current_team(self):
+        self.current_team = self.teams_list[self.cursor_index] 
+
     "== INTERFACE =="
 
     def draw_team(self):
-        TextBox(
+        team_name_text = TextBox(
+            f"{self.current_team.name} : {self.current_team.id}" ,
+            self.left_field.get_rect().left + 150,
+            self.center_circle.centery - 100,
+            300, 50, self.current_team.color
+            ).draw(self.screen)
+
+        team_rectangle = TextBox(
             self.current_team.nickname,
             self.left_field.get_rect().left + 150,
-            self.center_circle.centery - 50,
+            self.center_circle.centery - 0,
             300, 100, self.current_team.color 
             ).draw(self.screen)
+
     
     def draw_player(self):
         for player in self.player_list:
             player.draw(self.screen)
             player.get_names(self.screen)
         
-        
-
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
 
+            keys = pygame.key.get_pressed()
+            
+            if keys[pygame.K_UP]:
+                pygame.time.wait(150)  # Add delay to slow down the key press
+                self.cursor_index = (self.cursor_index - 1) % len(self.teams_list)
+                self.update_current_team()
+                self.load_player(int(self.current_team.id))
+            elif keys[pygame.K_DOWN]:
+                pygame.time.wait(150)  # Add delay to slow down the key press
+                self.cursor_index = (self.cursor_index + 1) % len(self.teams_list)
+                self.update_current_team()
+                self.load_player(int(self.current_team.id))
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
@@ -135,6 +157,7 @@ class CreateLeaguePage:
             self.draw_field()
             self.draw_team()
             self.draw_player()
-                
-        
+                    
             pygame.display.update()
+            pygame.time.Clock().tick(60)
+            
