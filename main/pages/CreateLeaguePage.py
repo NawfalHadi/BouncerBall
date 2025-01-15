@@ -205,7 +205,7 @@ class CreateLeaguePage:
     def draw_player(self):
         for player in self.player_list:
             player.draw(self.screen)
-            player.get_names(self.screen)
+            player.show_names(self.screen)
 
     def draw_input(self):
         keys = pygame.key.get_pressed()

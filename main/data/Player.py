@@ -51,3 +51,11 @@ class Player():
             text = font.render(self.name, True, (BLACK))
             text_rect = text.get_rect(center=(self.x + self.width // 2, self.y + self.height + 10))
             screen.blit(text, text_rect)
+
+    def show_names(self, screen):
+        rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+        font = pygame.font.Font(None, 18)
+        text = font.render(self.name, True, (BLACK))
+        text_rect = text.get_rect(center=(self.x + self.width // 2, self.y + self.height + 10))
+        screen.blit(text, text_rect)
