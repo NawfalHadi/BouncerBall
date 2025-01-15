@@ -18,6 +18,12 @@ class CreateLeaguePage:
         self.isLoading = True
         self.isRunning = True
 
+        "== INTERFACE =="
+        self.text_explanation = "Press Up & Down Arrow To Change Team, \nPress Space to Put Teams In The League"
+
+        "== TEMPORARY DATA =="
+        self.league_teams = []
+
         "== DATA =="
         self.teams_list = self.load_teams()
         self.player_list = None
@@ -110,6 +116,13 @@ class CreateLeaguePage:
     def update_current_team(self):
         self.current_team = self.teams_list[self.cursor_index] 
 
+    "== CREATE LEAGUE =="
+    def create_league(self):
+        pass
+
+    def create_schedule(sel):
+        pass
+
     "== INTERFACE =="
 
     def draw_team(self):
@@ -127,12 +140,37 @@ class CreateLeaguePage:
             300, 100, self.current_team.color 
             ).draw(self.screen)
 
-    
     def draw_player(self):
         for player in self.player_list:
             player.draw(self.screen)
             player.get_names(self.screen)
+
+    def draw_input(self):
+        keys = pygame.key.get_pressed()
         
+        checkbox_rect = pygame.Rect(self.left_field.get_rect().left + 40, self.bottom_field.get_rect().top - 40, 20, 20)
+        if self.current_team in self.league_teams:
+            pygame.draw.rect(self.screen, BLACK, checkbox_rect)
+            if keys[pygame.K_SPACE]:
+                pygame.time.wait(150)  # Add delay to slow down the key press
+                self.league_teams.remove(self.current_team)
+        else:
+            pygame.draw.rect(self.screen, BLACK, checkbox_rect, 2)
+            if keys[pygame.K_SPACE]:
+                pygame.time.wait(150)  # Add delay to slow down the key press
+                self.league_teams.append(self.current_team)
+
+        font = pygame.font.Font(None, 24)
+        text_surface = font.render("Black means the teams joined the league", True, BLACK)
+        text_rect = text_surface.get_rect(midleft=(checkbox_rect.right + 10, checkbox_rect.centery))
+        self.screen.blit(text_surface, text_rect)
+
+    def draw_instruction (self):
+        font = pygame.font.Font(None, 36)
+        text_surface = font.render(self.text_explanation, True, BLACK)
+        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, START_FIELD_HEIGHT - 50))
+        self.screen.blit(text_surface, text_rect)
+
     def run(self):
         while self.isRunning:
             self.screen.fill(WHITE)
@@ -150,13 +188,18 @@ class CreateLeaguePage:
                 self.update_current_team()
                 self.load_player(int(self.current_team.id))
             
+                
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
 
             self.draw_field()
+
             self.draw_team()
             self.draw_player()
+            self.draw_input()
+            self.draw_instruction()
                     
             pygame.display.update()
             pygame.time.Clock().tick(60)
