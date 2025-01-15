@@ -36,8 +36,8 @@ class GamesSimulationPage:
         self.top_field = Line((START_FIELD_WIDHT, START_FIELD_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_HEIGHT), BLACK)
         self.bottom_field = Line((START_FIELD_WIDHT, START_FIELD_HEIGHT + FIELD_HEIGHT), (START_FIELD_WIDHT + FIELD_WIDTH, START_FIELD_HEIGHT + FIELD_HEIGHT), BLACK)
 
-        self.top_gk_left_field = Line((START_FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_GK_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), RED)
-        self.bottom_gk_left_field = Line((START_FIELD_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), RED)
+        self.top_gk_left_field = Line((START_FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_GK_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), BLACK)
+        self.bottom_gk_left_field = Line((START_FIELD_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLUE)
         self.gk_left_vertical = Line((START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT), (START_FIELD_WIDHT + FIELD_GK_WIDHT, START_FIELD_GK_HEIGHT + FIELD_GK_HEIGHT), BLACK)
 
         self.top_df_left_field = Line((START_FIELD_WIDHT, START_FIELD_DF_HEIGHT), (START_FIELD_DF_WIDHT + FIELD_DF_WIDHT, START_FIELD_DF_HEIGHT), BLACK)
@@ -335,11 +335,12 @@ class GamesSimulationPage:
                 left = self.left_field.get_rect().left              
 
             if player.x < self.gk_left_vertical.get_rect().left:
-                if player.y < self.top_gk_left_field.get_rect().top:
+                if player.y > self.bottom_gk_left_field.get_rect().top:
+                    top = self.bottom_gk_left_field.get_rect().top + (player.height / 2) - 5
+                elif player.y < self.top_gk_left_field.get_rect().top:
                     bottom = self.top_gk_left_field.get_rect().top
-                elif player.y > self.bottom_gk_left_field.get_rect().bottom:
-                    top = self.bottom_gk_left_field.get_rect().bottom
 
+                    
         
         elif player.side == "R":
             top = self.top_field.get_rect().top
