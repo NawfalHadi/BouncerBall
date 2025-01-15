@@ -8,6 +8,7 @@ from main.ui.Line import Line
 from main.ui.TextBox import TextBox
 
 from main.data.Team import Team
+from main.data.Player import Player
 
 class CreateLeaguePage:
     def __init__(self):
@@ -19,13 +20,14 @@ class CreateLeaguePage:
 
         "== DATA =="
         self.teams_list = self.load_teams()
+        self.player_list = None
 
         "== CURSOR STATE =="
-        self.cursor_index = 0
+        self.cursor_index = 5
         self.current_team = self.teams_list[self.cursor_index]
-        
 
         self.init_field()
+        self.load_player(self.current_team.id)
 
     "== FIELD =="
 
@@ -79,6 +81,30 @@ class CreateLeaguePage:
                 teams.append(team)
         return teams
 
+    def load_player(self, id_team):
+        players = []
+        with open('main/db/Player.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if int(row['id_team']) == 5:
+                    player = Player(
+                    name=row['name'],
+                    x=float(row['x']),
+                    y=float(row['y']),
+                    width=35,
+                    height=35,
+                    color=self.current_team.color,
+                    role=row['role'],
+                    side="R",
+                    number=int(row['number']),
+                    path=int(row['direction'])
+                    )
+
+                    player.set_position()
+                    players.append(player)
+        
+        self.player_list = players
+
     "== CHOOSE TEAM =="
 
     "== INTERFACE =="
@@ -86,13 +112,17 @@ class CreateLeaguePage:
     def draw_team(self):
         TextBox(
             self.current_team.nickname,
-            self.left_field.get_rect().left,
-            self.top_field.get_rect().bottom,
+            self.left_field.get_rect().left + 150,
+            self.center_circle.centery - 50,
             300, 100, self.current_team.color 
             ).draw(self.screen)
     
     def draw_player(self):
-        pass
+        for player in self.player_list:
+            player.draw(self.screen)
+            player.get_names(self.screen)
+        
+        
 
     def run(self):
         while self.isRunning:
@@ -104,6 +134,7 @@ class CreateLeaguePage:
 
             self.draw_field()
             self.draw_team()
+            self.draw_player()
                 
         
             pygame.display.update()
