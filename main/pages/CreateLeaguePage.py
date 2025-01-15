@@ -1,5 +1,6 @@
 import pygame
 import csv
+import os
 
 from main.constant.Size import *
 from main.constant.Color import *
@@ -118,10 +119,71 @@ class CreateLeaguePage:
 
     "== CREATE LEAGUE =="
     def create_league(self):
-        pass
+        self.league_name = f"league_default"
+        self.directory = 'main/db/leagues'
+        
+        # Check if the directory exists, if not, create it
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        
+        file_path = os.path.join(self.directory, f'{self.league_name}.csv')
+        
+        # Check if the file exists, if not, create it
+        if not os.path.isfile(file_path):
+            with open(file_path, mode='w', newline='') as file:
+                fieldnames = ['team_id', 'team_name', 'team_nickname', 'team_color', 'win', 'draw', 'lose', 'ga', 'gf', 'gd', 'point']
+                writer = csv.DictWriter(file, fieldnames=fieldnames)
+                writer.writeheader()
+                for team in self.league_teams:
+                    writer.writerow({
+                    'team_id': team.id,
+                    'team_name': team.name,
+                    'team_nickname': team.nickname,
+                    'team_color': team.color,
+                    'win': 0,
+                    'draw': 0,
+                    'lose': 0,
+                    'ga': 0,
+                    'gf': 0,
+                    'gd': 0,
+                    'point': 0
+                    })
 
-    def create_schedule(sel):
-        pass
+    def create_schedule(self):
+        self.league_name = f"league_default"
+        self.directory = 'main/db/leagues'
+        schedule_directory = 'main/db/schedule'
+        
+        # Check if the directory exists, if not, create it
+        if not os.path.exists(schedule_directory):
+            os.makedirs(schedule_directory)
+        
+        schedule_file_path = os.path.join(schedule_directory, f'{self.league_name}.csv')
+        
+        # Generate the schedule
+        schedule = []
+        match_id = 1
+        for i, home_team in enumerate(self.league_teams):
+            for j, away_team in enumerate(self.league_teams):
+                if home_team != away_team:
+                    schedule.append({
+                    'id': match_id,
+                    'league_id': self.league_name,
+                    'home_team_id': home_team.id,
+                    'away_team_id': away_team.id,
+                    'home_score': 0,
+                    'away_score': 0,
+                    'finish': False
+                    })
+                    match_id += 1
+        
+        # Write the schedule to the CSV file
+        with open(schedule_file_path, mode='w', newline='') as file:
+            fieldnames = ['id', 'league_id', 'home_team_id', 'away_team_id', 'home_score', 'away_score', 'finish']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for match in schedule:
+                writer.writerow(match)
 
     "== INTERFACE =="
 
@@ -192,6 +254,8 @@ class CreateLeaguePage:
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.create_league()
+                    self.create_schedule()
                     self.isRunning = False
 
             self.draw_field()

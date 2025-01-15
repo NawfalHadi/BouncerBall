@@ -1,0 +1,13 @@
+id,league_id,home_team_id,away_team_id,home_score,away_score,finish
+1,league_default,5,4,,,False
+2,league_default,5,7,,,False
+3,league_default,5,9,,,False
+4,league_default,4,5,,,False
+5,league_default,4,7,,,False
+6,league_default,4,9,,,False
+7,league_default,7,5,,,False
+8,league_default,7,4,,,False
+9,league_default,7,9,,,False
+10,league_default,9,5,,,False
+11,league_default,9,4,,,False
+12,league_default,9,7,,,False
