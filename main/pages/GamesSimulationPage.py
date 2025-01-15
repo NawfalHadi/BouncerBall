@@ -149,6 +149,8 @@ class GamesSimulationPage:
                 self.check_df_frame_collision(player)
             elif player.role == "MD":
                 self.check_md_frame_collision(player)
+            elif player.role == "FW":
+                self.check_fw_frame_collision(player)
             else:
                 self.check_player_frame_collision(player)
 
@@ -174,6 +176,8 @@ class GamesSimulationPage:
                 self.check_df_frame_collision(player)
             elif player.role == "MD":
                 self.check_md_frame_collision(player)
+            elif player.role == "FW":
+                self.check_fw_frame_collision(player)
             else:
                 self.check_player_frame_collision(player)
 
@@ -340,8 +344,6 @@ class GamesSimulationPage:
                 elif player.y < self.top_gk_left_field.get_rect().top:
                     bottom = self.top_gk_left_field.get_rect().top
 
-                    
-        
         elif player.side == "R":
             top = self.top_field.get_rect().top
             left = self.center_field.get_rect().left
@@ -366,18 +368,16 @@ class GamesSimulationPage:
             top = self.top_field.get_rect().top
             left = self.gk_left_vertical.get_rect().left
             right = self.df_right_vertical.get_rect().left
-            bottom = self.bottom_field.get_rect().top
+            bottom = self.bottom_field.get_rect().top  
 
             if player.y < self.top_gk_left_field.get_rect().top or player.y > self.bottom_gk_left_field.get_rect().top:
-                left = self.left_field.get_rect().left
+                left = self.left_field.get_rect().left              
 
             if player.x < self.gk_left_vertical.get_rect().left:
-                if player.y < self.top_gk_left_field.get_rect().top:
+                if player.y > self.bottom_gk_left_field.get_rect().top:
+                    top = self.bottom_gk_left_field.get_rect().top + (player.height / 2) - 5
+                elif player.y < self.top_gk_left_field.get_rect().top:
                     bottom = self.top_gk_left_field.get_rect().top
-                elif player.y > self.bottom_gk_left_field.get_rect().top:
-                    top = self.bottom_gk_left_field.get_rect().bottom
-                    
-                        
         
         elif player.side == "R":
             top = self.top_field.get_rect().top
@@ -398,6 +398,52 @@ class GamesSimulationPage:
             player.y = bottom - player.height
             player.speed_y = -player.speed_y
 
+    def check_fw_frame_collision(self, player):
+        if player.side == "L":
+            top = self.top_field.get_rect().top
+            left = self.df_left_vertical.get_rect().left
+            right = self.gk_right_vertical.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+
+            if player.y < self.top_df_left_field.get_rect().top or player.y > self.bottom_df_left_field.get_rect().top:
+                left = self.left_field.get_rect().left
+            
+            if player.y < self.top_gk_left_field.get_rect().top or player.y > self.bottom_gk_right_field.get_rect().top:
+                right = self.right_field.get_rect().left
+
+            # Dont Enter Defensive Area
+            if player.x < self.df_left_vertical.get_rect().left:
+                if player.y > self.bottom_df_left_field.get_rect().top:
+                    top = self.bottom_df_left_field.get_rect().top + (player.height / 2) - 5
+                elif player.y < self.top_df_left_field.get_rect().top:
+                    bottom = self.top_df_left_field.get_rect().top
+
+            # Dont Enter Gk Opponent Area
+            if player.x > self.gk_right_vertical.get_rect().left:
+                if player.y > self.bottom_gk_right_field.get_rect().top:
+                    top = self.bottom_gk_right_field.get_rect().top + (player.height / 2) - 5
+                elif player.y < self.top_gk_right_field.get_rect().top:
+                    bottom = self.top_gk_right_field.get_rect().top
+
+        elif player.side == "R":
+            top = self.top_field.get_rect().top
+            left = self.gk_left_vertical.get_rect().left
+            right = self.df_right_vertical.get_rect().left
+            bottom = self.bottom_field.get_rect().top
+
+        if player.x <= left:
+            player.x = left
+            player.speed_x = -player.speed_x
+        if player.x + player.width >= right:
+            player.x = right - player.width
+            player.speed_x = -player.speed_x
+        if player.y <= top:
+            player.y = top
+            player.speed_y = -player.speed_y
+        if player.y + player.height >= bottom:
+            player.y = bottom - player.height
+            player.speed_y = -player.speed_y
+        
     def check_ball_frame_collision(self):
         if self.ball.x <= START_FIELD_WIDHT:
             self.ball.x = START_FIELD_WIDHT
