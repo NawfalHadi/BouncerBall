@@ -371,13 +371,22 @@ class GamesSimulationPage:
             bottom = self.bottom_field.get_rect().top  
 
             if player.y < self.top_gk_left_field.get_rect().top or player.y > self.bottom_gk_left_field.get_rect().top:
-                left = self.left_field.get_rect().left              
+                left = self.left_field.get_rect().left        
+
+            if player.y < self.top_df_right_field.get_rect().top or player.y > self.bottom_df_right_field.get_rect().top:
+                right = self.right_field.get_rect().left
 
             if player.x < self.gk_left_vertical.get_rect().left:
                 if player.y > self.bottom_gk_left_field.get_rect().top:
                     top = self.bottom_gk_left_field.get_rect().top + (player.height / 2) - 5
                 elif player.y < self.top_gk_left_field.get_rect().top:
                     bottom = self.top_gk_left_field.get_rect().top
+
+            if player.x > self.df_right_vertical.get_rect().left:
+                if player.y > self.bottom_df_right_field.get_rect().top:
+                    top = self.bottom_df_right_field.get_rect().top + (player.height / 2) - 5
+                elif player.y < self.top_df_left_field.get_rect().top:
+                    bottom = self.top_df_left_field.get_rect().top
         
         elif player.side == "R":
             top = self.top_field.get_rect().top
