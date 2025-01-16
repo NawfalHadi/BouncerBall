@@ -428,8 +428,6 @@ class CreateTeamsPage:
                             button.is_clicked(event)
 
                 self.save_csv.is_clicked(event)
-                
-                
 
             self.update_title()
 

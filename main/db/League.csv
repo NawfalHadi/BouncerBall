@@ -1,0 +1,2 @@
+id,league_name,league_path,schedule_path,team_amount,match_amount
+0,Monther_League,main/db/leagues\Monther_League.csv,main/db/schedule\Monther_League.csv,12,132
