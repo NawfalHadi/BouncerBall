@@ -144,7 +144,7 @@ class CreateLeaguePage:
         # Check if the file exists, if not, create it
         if not os.path.isfile(file_path):
             with open(file_path, mode='w', newline='') as file:
-                fieldnames = ['id', 'team_id', 'team_name', 'team_nickname', 'team_color', 'win', 'draw', 'lose', 'ga', 'gf', 'gd', 'point']
+                fieldnames = ['team_id', 'team_name', 'team_nickname', 'team_color', 'win', 'draw', 'lose', 'ga', 'gf', 'gd', 'point']
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
                 writer.writeheader()
                 for team in self.league_teams:
