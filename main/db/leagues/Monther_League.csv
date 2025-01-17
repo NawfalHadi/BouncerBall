@@ -1,13 +1,13 @@
-id,team_id,team_name,team_nickname,team_color,win,draw,lose,ga,gf,gd,point
-,8,Team August,Dark Knights,#000000,0,0,0,0,0,0,0
-,9,Team September,Autumn Centaurs,#A52A2A,0,0,0,0,0,0,0
-,10,Team October,Ghostly Spirits,#FFFFFF,0,0,0,0,0,0,0
-,11,Team November,Storm Giants,#808080,0,0,0,0,0,0,0
-,12,Team December,Ice Titans,#FFD700,0,0,0,0,0,0,0
-,1,Team January,Winter Wolves,#FF0000,0,0,0,0,0,0,0
-,2,Team February,Love Dragons,#0000FF,0,0,0,0,0,0,0
-,3,Team March,Emerald Elves,#008000,0,0,0,0,0,0,0
-,4,Team April,Thunder Phoenixes,#FFFF00,0,0,0,0,0,0,0
-,7,Team July,Flame Lions,#FFC0CB,0,0,0,0,0,0,0
-,6,Team June,Shadow Panthers,#800080,0,0,0,0,0,0,0
-,5,Team May,Golden Griffins,#FFA500,0,0,0,0,0,0,0
+team_id,team_name,team_nickname,team_color,win,draw,lose,ga,gf,gd,point
+8,Team August,Dark Knights,#000000,0,0,0,0,0,0,0
+9,Team September,Autumn Centaurs,#A52A2A,0,0,0,0,0,0,0
+10,Team October,Ghostly Spirits,#FFFFFF,0,0,0,0,0,0,0
+11,Team November,Storm Giants,#808080,0,0,0,0,0,0,0
+12,Team December,Ice Titans,#FFD700,0,0,0,0,0,0,0
+1,Team January,Winter Wolves,#FF0000,0,0,0,0,0,0,0
+2,Team February,Love Dragons,#0000FF,0,0,0,0,0,0,0
+3,Team March,Emerald Elves,#008000,0,0,0,0,0,0,0
+4,Team April,Thunder Phoenixes,#FFFF00,0,0,0,0,0,0,0
+7,Team July,Flame Lions,#FFC0CB,0,0,0,0,0,0,0
+6,Team June,Shadow Panthers,#800080,0,0,0,0,0,0,0
+5,Team May,Golden Griffins,#FFA500,0,0,0,0,0,0,0
