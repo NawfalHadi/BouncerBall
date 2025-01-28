@@ -29,7 +29,7 @@ class CreateLeaguePage:
         self.player_list = None
 
         "== CURSOR STATE =="
-        self.cursor_index = 4
+        self.cursor_index = 0
         self.current_team = self.teams_list[self.cursor_index]
 
         self.init_field()
