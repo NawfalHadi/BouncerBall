@@ -6,6 +6,7 @@ from main.constant.Color import *
 
 from main.ui.TextBox import TextBox
 
+from main.data.Schedule import *
 from main.data.Team import *
 
 
@@ -20,11 +21,14 @@ class ShowLeaguePage:
 
         "== DATA =="
         self.teams_list = self.load_teams(league_id)
-        self.teams_schedule = None
 
         "== CURSOR TEAM STATE =="
         self.cursor_index = 0
         self.current_team = self.teams_list[self.cursor_index]
+
+        "== DATA AFTER LOAD TEAM =="
+        self.teams_schedule = self.load_schedule()
+        print(self.teams_schedule)
 
         "== INTERFACE =="
         self.text_explanation = "Press Left & Arrow To Check Another Teams Schedule"
@@ -54,8 +58,27 @@ class ShowLeaguePage:
                 teams.append(team)
         return teams
     
-    
-
+    def load_schedule(self):
+        schedules = []
+        with open(f'{self.schedule_path}', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if int(row['home_team_id'] == self.current_team.id):
+                    home = self.current_team
+                    away = None
+                    for team in self.teams_list:
+                        if int(team.id) == int(row['away_team_id']):
+                            away = team
+                    
+                    schedule = Schedule(
+                        home, away,
+                        row['home_score'],
+                        row['away_score']
+                    )
+                    schedules.append(schedule)
+                    
+        return schedules
+            
     "== INTERFACE =="
     def draw_instruction(self):
         font = pygame.font.Font(None, 36)
@@ -79,7 +102,7 @@ class ShowLeaguePage:
         self.schedule_background = TextBox("", 600, 200, 1000, 800, RED, WHITE).draw(self.screen)
 
     def draw_content_schedule(self):
-        pass
+        self.team_a = Schedule()
 
     "== KEY INPUT =="
     def key_input(self):
