@@ -28,7 +28,8 @@ class ShowLeaguePage:
 
         "== DATA AFTER LOAD TEAM =="
         self.teams_schedule = self.load_schedule()
-        print(self.teams_schedule)
+        print(len(self.teams_schedule))
+        self.change_teams()
 
         "== INTERFACE =="
         self.text_explanation = "Press Left & Arrow To Check Another Teams Schedule"
@@ -76,9 +77,29 @@ class ShowLeaguePage:
                         row['away_score']
                     )
                     schedules.append(schedule)
+
+                elif int(row['away_team_id'] == self.current_team.id):
+                    home = None
+                    away = self.current_team
+                    for team in self.teams_list:
+                        if int(team.id) == int(row['home_team_id']):
+                            home = team
+                    
+                    schedule = Schedule(
+                        home, away,
+                        row['home_score'],
+                        row['away_score']
+                    )
+                    schedules.append(schedule)
                     
         return schedules
-            
+    
+    def change_teams(self):
+        self.current_team = self.teams_list[self.cursor_index]
+        self.teams_schedule = self.load_schedule()
+
+        self.longest_team_name = self.check_team_name_letter()
+
     "== INTERFACE =="
     def draw_instruction(self):
         font = pygame.font.Font(None, 36)
@@ -93,16 +114,38 @@ class ShowLeaguePage:
         self.screen.blit(text_surface, text_rect)
 
     def draw_leaderboard(self):
-        self.leaderboard_background = TextBox("", 50, 200, 500, 800, BLACK, WHITE).draw(self.screen)
+        self.leaderboard_background = TextBox("", 50, 200, 500, 800, BLACK, WHITE)
 
     def draw_content_leaderboard(self):
         pass
 
     def draw_schedule(self):
-        self.schedule_background = TextBox("", 600, 200, 1000, 800, RED, WHITE).draw(self.screen)
+        self.schedule_background = TextBox("", 600, 200, 1000, 800, RED, WHITE)
 
     def draw_content_schedule(self):
-        self.team_a = Schedule()
+        self.team_a = self.teams_schedule[0]
+        self.team_a.set_rectangle(
+            self.schedule_background.rect.left + 20, 
+            self.schedule_background.rect.top + 20, 
+            750, 40, BLACK, WHITE, WHITE, BLACK)
+        self.team_a.draw(self.screen, self.longest_team_name)
+
+    def draw_background(self):
+        self.leaderboard_background.draw(self.screen)
+        self.schedule_background.draw(self.screen)
+
+    "== FUNCTION =="
+    def check_team_name_letter(self):
+        font = pygame.font.Font(None, 36)
+        max_width = 0
+
+        for schedule in self.teams_schedule:
+            text_surface = font.render(schedule.home_team.name, True, BLACK)
+            text_width = text_surface.get_width()
+            if text_width > max_width:
+                max_width = text_width
+
+        return max_width
 
     "== KEY INPUT =="
     def key_input(self):
@@ -112,12 +155,12 @@ class ShowLeaguePage:
             if self.cursor_index > 0:
                 pygame.time.wait(150)  # Add delay to slow down the key press
                 self.cursor_index -= 1
-                self.current_team = self.teams_list[self.cursor_index]
+                self.change_teams()
         elif keys[pygame.K_RIGHT]:
             if self.cursor_index < len(self.teams_list) - 1:
                 pygame.time.wait(150)  # Add delay to slow down the key press
                 self.cursor_index += 1
-                self.current_team = self.teams_list[self.cursor_index]
+                self.change_teams()             
 
     def run(self):
         while self.isRunning:
@@ -133,5 +176,9 @@ class ShowLeaguePage:
             self.draw_instruction()
             self.draw_leaderboard()
             self.draw_schedule()
+
+            self.draw_background()
+
+            self.draw_content_schedule()
             
             pygame.display.update()
