@@ -9,7 +9,9 @@ from main.ui.TextBox import TextBox
 from main.data.Schedule import *
 from main.data.Team import *
 
-
+# Scroll settings
+SCROLL_SPEED = 20
+ITEM_HEIGHT = 75
 
 class ShowLeaguePage:
     def __init__(self, league_id=0):
@@ -33,6 +35,11 @@ class ShowLeaguePage:
 
         "== INTERFACE =="
         self.text_explanation = "Press Left & Arrow To Check Another Teams Schedule"
+
+        "== SCROLL SETTINGS =="
+        self.scroll_pos = 0
+        self.scroll_speed = 20
+        self.scroll_max = len(self.teams_schedule) * ITEM_HEIGHT - 430
 
     "== TEAMS =="
     def load_teams(self, id):
@@ -121,14 +128,32 @@ class ShowLeaguePage:
 
     def draw_schedule(self):
         self.schedule_background = TextBox("", 600, 200, 1000, 800, RED, WHITE)
+        self.schedule_background.draw(self.screen)
 
-    def draw_content_schedule(self):
-        self.team_a = self.teams_schedule[0]
-        self.team_a.set_rectangle(
-            self.schedule_background.rect.left + 20, 
-            self.schedule_background.rect.top + 20, 
-            750, 40, BLACK, WHITE, WHITE, BLACK)
-        self.team_a.draw(self.screen, self.longest_team_name)
+        self.draw_content_schedule(pygame.Rect(600, 200, 1000, 800))
+
+    def draw_content_schedule(self, list_rect_bg):
+
+        start_idx = self.scroll_pos // ITEM_HEIGHT
+        end_idx = (self.scroll_pos + list_rect_bg.height) // ITEM_HEIGHT + 1
+
+        self.schdls = []
+
+        for i, item in enumerate(self.teams_schedule[start_idx:end_idx]):
+            
+            item.set_rectangle(
+                list_rect_bg.left + 20,
+                list_rect_bg.top + 20 + (i * ITEM_HEIGHT),
+                750, 40, BLACK, WHITE, WHITE, BLACK
+            )
+            item.draw(self.screen, self.longest_team_name)
+
+        # self.team_a = self.teams_schedule[0]
+        # self.team_a.set_rectangle(
+        #     self.schedule_background.rect.left + 20, 
+        #     self.schedule_background.rect.top + 20, 
+        #     750, 40, BLACK, WHITE, WHITE, BLACK)
+        # self.team_a.draw(self.screen, self.longest_team_name)
 
     def draw_background(self):
         self.leaderboard_background.draw(self.screen)
@@ -172,13 +197,15 @@ class ShowLeaguePage:
                 if event.type == pygame.QUIT:
                     self.isRunning = False
 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        self.scroll_pos = max(self.scroll_pos - SCROLL_SPEED, 0)
+                    elif event.button == 5:
+                        self.scroll_pos = min(self.scroll_pos + SCROLL_SPEED, self.scroll_max)
+
             self.draw_teams()
             self.draw_instruction()
             self.draw_leaderboard()
             self.draw_schedule()
-
-            self.draw_background()
-
-            self.draw_content_schedule()
             
             pygame.display.update()
