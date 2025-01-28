@@ -122,6 +122,7 @@ class ShowLeaguePage:
 
     def draw_leaderboard(self):
         self.leaderboard_background = TextBox("", 50, 200, 500, 800, BLACK, WHITE)
+        self.leaderboard_background.draw(self.screen)
 
     def draw_content_leaderboard(self):
         pass
