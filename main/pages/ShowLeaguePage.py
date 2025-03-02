@@ -149,13 +149,6 @@ class ShowLeaguePage:
             )
             item.draw(self.screen, self.longest_team_name)
 
-        # self.team_a = self.teams_schedule[0]
-        # self.team_a.set_rectangle(
-        #     self.schedule_background.rect.left + 20, 
-        #     self.schedule_background.rect.top + 20, 
-        #     750, 40, BLACK, WHITE, WHITE, BLACK)
-        # self.team_a.draw(self.screen, self.longest_team_name)
-
     def draw_background(self):
         self.leaderboard_background.draw(self.screen)
         self.schedule_background.draw(self.screen)
